@@ -40,6 +40,8 @@
 
 </style>
 
+<div id="cursor"></div>
+
 <section id="midifighter">
 
   <nav id="color_selector">
@@ -48,13 +50,13 @@
       <h4>
         <a href="#" class="tooltip" title="Every Midi-Fighter is equipped with high-performance Sanwa arcade buttons which are made in Japan by Dj Samurai warriors.">?</a>
         <input id="buttons_3504" name="buttons" type="radio" value="35.04" />
-        <label for="buttons" class="title">Arcade Buttons [$35]</label>
+        <label class="title" for="buttons_3504">Arcade Buttons [$35]</label>
       </h4>
 
       <h4>
-        <a href="#" class="tooltip" title="The opposite of having a buttons... no buttons.">?</a>
+        <a href="#" class="tooltip" title="The opposite of having buttons... no buttons.">?</a>
         <input checked="checked" id="buttons_0" name="buttons" type="radio" value="0" />
-        <label for="buttons" class="title">No Buttons [$0]</label>
+        <label class="title" for="buttons_0">No Buttons [$0]</label>
       </h4>
       <ul></ul>
     </div>
@@ -63,13 +65,12 @@
       <h4>
         <a href="#" class="tooltip" title="Our Silicon cases are interchangeable and slip on or off like an iPhone glove. They have a nice grippy feel to them and a rounded camper edge so your fingers wont catch while performing lighting fast button crabs!">?</a>
         <input id="silicone_case_1999" name="silicone_case" type="radio" value="19.99" />
-        <label for="silicone_case_19" class="title">Silicone Case [$19]</label>
+        <label class="title" for="silicone_case_1999">Silicone Case [$19]</label>
       </h4>
       <h4>
         <a href="#" class="tooltip" title="The opposite of having a case... no case.">?</a>
-
         <input checked="checked" id="silicone_case_0" name="silicone_case" type="radio" value="0" />
-        <label for="silicone_case_0" class="title">No Case [$0]</label>
+        <label class="title" for="silicone_case_0">No Case [$0]</label>
       </h4>
       <ul></ul>
     </div>
@@ -77,15 +78,13 @@
     <div class="acrylic palette">
       <h4>
         <a href="#" class="tooltip" title="We have a sweet stash of cool spray-paint colors that we use to back paint the acrylic for a professional color finish. You can also get replacement acrylic top's in the future if your color tastes change like the seasons.  The top acrylic is painted but the bottom is left clear so you can see the PCB.">?</a>
-
         <input id="acrylic_top_499" name="acrylic_top" type="radio" value="4.99" />
-        <label for="acrylic_top_5" class="title">Painted Top [$5]</label>
+        <label class="title" for="acrylic_top_499">Painted Top [$5]</label>
       </h4>
       <h4>
         <a href="#" class="tooltip" title="If you want to see the jet black guts of the midi-fighter and keep it DIY looking, you may want to opt for the clear acrylic option or paint it yourself. Some Midi-Fighter's even get tricked out with patterns, hand-painted graphics and magazine cut-outs.">?</a>
         <input checked="checked" id="acrylic_top_0" name="acrylic_top" type="radio" value="0" />
-        <label for="acrylic_top_0" class="title">Clear Acrylic [$0]</label>
-
+        <label class="title" for="acrylic_top_0">Clear Acrylic [$0]</label>
       </h4>
       <ul></ul>
     </div>
@@ -94,7 +93,7 @@
       <h4>
         <a href="#" class="tooltip" title="We build the Midi-Fighter for you. Custom built midi fighter's will receive a Certificate of Authenticity, which is hand signed and numbered with a polaroid of your layout. Every certificate is scanned into an online registry of Midi-Fighters.">?</a>
         <input checked="checked" data-shop-id="47673432" id="assembled_15" name="assembled" type="radio" value="15" />
-        <label for="assembled_10" class="title">Assembled [$15]</label>
+        <label for="assembled_15" class="title">Assembled [$15]</label>
 
       </h4>
       <h4>
@@ -104,6 +103,13 @@
       </h4>
     </div>
 
+    <div class="link">
+      <h4>
+        <a href="#" class="tooltip" title="Bookmarking or saving this link will let you come back to your masterpiece in progress.">?</a>
+        <label class="title" for="share_link">Share link</label>
+      </h4>
+      <input id="share_link" name="share_link" onclick="this.focus(); this.select();" type="text" />
+    </div>
   </nav>
 
   <div id="note" style="display:none">{{cart.note}}</div>
@@ -111,85 +117,79 @@
   <form class="controller" name="cartadd" method="post" action="/cart/add">
     <!-- defaults to diy assembly -->
     <input id="controller_assembly_input" type="hidden" value=""/>
-    <input id="controller_input" type="hidden" name="id[]" value="29112622"/>
+    <input id="controller_input" type="hidden" name="id[]" value="46889992"/>
 
     <div class="silicone colorable">
       <input id="silicone_input" class="silicone" type="hidden" name="id[]"/>
 
       <div class="acrylic colorable">
-
         <input id="acrylic_input" class="acrylic" type="hidden" name="id[]"/>
 
-        
+
             <div class="button colorable col_0 row_0">
               <input id="button_0_0_input" type="hidden" name="id[]">
             </div>
-        
+
             <div class="button colorable col_1 row_0">
               <input id="button_1_0_input" type="hidden" name="id[]">
             </div>
-        
-            <div class="button colorable col_2 row_0">
 
+            <div class="button colorable col_2 row_0">
               <input id="button_2_0_input" type="hidden" name="id[]">
             </div>
-        
+
             <div class="button colorable col_3 row_0">
               <input id="button_3_0_input" type="hidden" name="id[]">
             </div>
-        
+
             <div class="button colorable col_0 row_1">
               <input id="button_0_1_input" type="hidden" name="id[]">
             </div>
-        
-            <div class="button colorable col_1 row_1">
 
+            <div class="button colorable col_1 row_1">
               <input id="button_1_1_input" type="hidden" name="id[]">
             </div>
-        
+
             <div class="button colorable col_2 row_1">
               <input id="button_2_1_input" type="hidden" name="id[]">
             </div>
-        
+
             <div class="button colorable col_3 row_1">
               <input id="button_3_1_input" type="hidden" name="id[]">
             </div>
-        
-            <div class="button colorable col_0 row_2">
 
+            <div class="button colorable col_0 row_2">
               <input id="button_0_2_input" type="hidden" name="id[]">
             </div>
-        
+
             <div class="button colorable col_1 row_2">
               <input id="button_1_2_input" type="hidden" name="id[]">
             </div>
-        
+
             <div class="button colorable col_2 row_2">
               <input id="button_2_2_input" type="hidden" name="id[]">
             </div>
-        
-            <div class="button colorable col_3 row_2">
 
+            <div class="button colorable col_3 row_2">
               <input id="button_3_2_input" type="hidden" name="id[]">
             </div>
-        
+
             <div class="button colorable col_0 row_3">
               <input id="button_0_3_input" type="hidden" name="id[]">
             </div>
-        
+
             <div class="button colorable col_1 row_3">
               <input id="button_1_3_input" type="hidden" name="id[]">
             </div>
-        
-            <div class="button colorable col_2 row_3">
 
+            <div class="button colorable col_2 row_3">
               <input id="button_2_3_input" type="hidden" name="id[]">
             </div>
-        
+
             <div class="button colorable col_3 row_3">
               <input id="button_3_3_input" type="hidden" name="id[]">
             </div>
-        
+
       </div>
     </div>
 
@@ -208,9 +208,31 @@
 
 </section>
 
+<script type="text/javascript">
+//<![CDATA[
+
+    $(function(){
+        $('nav h4 a.tooltip').tipsy({
+            gravity: 'w',
+            delayIn: 250,
+            delayOut: 250
+        });
+
+        $('nav .color[title="Clear"]').tipsy({
+            gravity: 'e',
+            delayIn: 0,
+            delayOut: 250,
+            trigger: 'manual'
+        }).tipsy("show");
+
+        $('div.tipsy.tipsy-e').css('z-index', 2);
+    });
+
+//]]>
+</script>
 
 <section id="product" class="midifighter">
-	
+
 	<div class="preview">
 		<div class="thumbs">
 			{% for image in product.images %}

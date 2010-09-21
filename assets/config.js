@@ -8,6 +8,8 @@ MF = window.MF ? MF : {};
     buttons: []
   };
 
+  var FIRE_CHANGES = true;
+
   function color_li(product) {
     return '<li class="color" style="background:' + product.color + '" data-color="' + product.color + '" title="' + product.name + '" data-shop-id="' + product.shop_id + '"></li>';
   }
@@ -26,43 +28,51 @@ MF = window.MF ? MF : {};
     apply_color_to_target(ui.draggable, $(this));
   }
 
+  function bad_target(target){
+    if (target.is(".button")   && !are_buttons_selected() ){ return true; }
+    if (target.is(".silicone") && !is_case_selected()     ){ return true; }
+    if (target.is(".acrylic")  && !is_acrylic_selected()  ){ return true; }
+    return false;
+  }
+
   function apply_color_to_target(color_el, target) {
-    if (target.is(".button") && !are_buttons_selected()) {
-      return;
-    }
-    if (target.is(".silicone") && !is_case_selected()) {
-      return;
-    }
-    if (target.is(".acrylic") && !is_acrylic_selected()) {
-      return;
-    }
+    if(bad_target(target)){ return; }
 
     var color = color_el.attr('data-color');
     var color_name = color_el.attr('title');
     var shop_id = color_el.attr('data-shop-id');
 
     target.css('background', color);
-    $('input[name=id[]]:first', target)
-            .val(shop_id)
-            .attr('data-color-name', color_name)
-            .change();
+    var input = $('input[name=id[]]:first', target);
+        input.val(shop_id).attr('data-color-name', color_name);
+
+    if(FIRE_CHANGES){
+      input.change();
+    }
   }
 
-  function apply_product_to_target(target, mf_class, product_index) {
-    if (product_index == -1) {
-      target.addClass('removed').css('background', '').attr('title', '');
-      target.find('input[name=id[]]:first')
-              .removeAttr('name')
-              .attr('data-color-name', '')
-              .change();
-      return;
-    }
+  function apply_product_id_to_target(product_id, target) {
+    $('.palette .color').each(function(i,el){
+      if($(el).attr('data-shop-id') === product_id){
+        apply_color_to_target($(el), $(target));
+      }
+    });
+  }
 
-    target.css('background', product[mf_class][product_index].color);
-    target.find('input[name=id[]]:first')
-            .val(product[mf_class][product_index].shop_id)
-            .attr('data-color-name', product[mf_class][product_index].name)
-            .change();
+  /**
+   * Poorly named?  Probably.. matches by shop id, that's the issue
+   * doesn't match on color...
+   * @param target
+   */
+  function get_color_from_target(target){
+    var color = undefined;
+    var input = $('input[name=id[]]:first', target);
+    $('.palette .color').each(function(i,el){
+      if($(el).attr('data-shop-id') === input.val()){
+        color = el;
+      }
+    });
+    return $(color);
   }
 
   function update_price() {
@@ -71,7 +81,7 @@ MF = window.MF ? MF : {};
       total += parseFloat($(this).val());
     });
     total = Math.ceil(total);
-    $('aside.checkout .value').text(total);
+    $('#checkout .value').text(total);
   }
 
   function update_buttons() {
@@ -98,7 +108,7 @@ MF = window.MF ? MF : {};
       $('input:first', $el).attr('name', 'id[]');
       $('input:first', $el).val(obj.shop_id);
       $('input:first', $el).attr('data-color-name', obj.color_name);
-      $('input:first', $el).change();
+      $('input:first', $el);
       $el.removeClass('removed').css('background', obj.color).attr('title', obj.color_name);
     }
     else {
@@ -107,7 +117,7 @@ MF = window.MF ? MF : {};
       $('input:first', $el).val('');
       obj.color_name = $('input:first', $el).attr('data-color-name');
       $('input:first', $el).attr('data-color-name', '');
-      $('input:first', $el).change();
+      $('input:first', $el);
       obj.color = $el.css('background');
       $el.addClass('removed').css('background', '').attr('title', '');
     }
@@ -139,35 +149,120 @@ MF = window.MF ? MF : {};
     }
   }
 
+  function setup_colors(){
+    $.each(product.silicone, function(i, product) {
+      $('nav .silicone ul').append(color_li(product));
+    });
+
+    $.each(product.acrylic, function(i, product) {
+      $('nav .acrylic ul').append(color_li(product));
+    });
+
+    $.each(product.button, function(i, product) {
+      $('nav .buttons ul').append(color_li(product));
+    });
+  }
+
+  function setup_clicks(){
+    $('nav .buttons .color').click(function() {
+      $(this).addClass('selected').siblings().removeClass('selected');
+    });
+
+    $('form.controller .button').click(function() {
+      var color = $('nav .buttons .color.selected');
+      if (color) {
+        apply_color_to_target(color, $(this));
+      }
+    });
+
+    $('nav .silicone .color').click(function() {
+      apply_color_to_target($(this), $('.controller .silicone'));
+    });
+
+    $('nav .acrylic .color').click(function() {
+      apply_color_to_target($(this), $('.controller .acrylic'));
+    });
+
+  }
+
+  function updateShareLink(){
+    var hash = self.serialize();
+    var link = location.href.split('#')[0] + '#' + hash;
+    $('#share_link').val(link);
+
+    var version = parseInt($.browser.version.replace(/\./g, ''));
+    if(!$.browser.mozilla || !(version < 1929)) {
+      location.hash = hash;
+    }
+  }
+
+  function condenseChanges(callback) {
+    FIRE_CHANGES = false;
+    callback.call();
+    FIRE_CHANGES = true;
+    updateShareLink();
+  }
+
+  var c;
   var self = MF.Config = {
 
+    serialize:function(){
+      var serialization = '';
+
+      if(are_buttons_selected()) {
+        serialization += "&buttons=";
+        $('.button', c).each(function(i, el) {
+          if(i !== 0){ serialization += ','; }
+          serialization += get_color_from_target(el).attr('data-shop-id');
+        });
+      }
+
+      if(is_case_selected()) {
+        serialization += "&case=" + get_color_from_target($('.silicone', c)).attr('data-shop-id');
+      }
+
+      if(is_acrylic_selected()) {
+        serialization += "&acrylic=" + get_color_from_target($('.acrylic', c)).attr('data-shop-id');
+      }
+
+      return serialization;
+    },
+
+    deserialize:function(hash){
+      condenseChanges(function(){
+        var params = hash.split('&');
+        for(var key in params) {
+          var value = params[key].split('=');
+          var product = value[0];
+          var shop_ids = value[1];
+          switch(product) {
+            case 'buttons':
+              var ids = shop_ids.split(',');
+              $('section nav .buttons input:first').click().change();
+              for(var i=0; i<ids.length; i++){
+                apply_product_id_to_target(ids[i], $('.button', c).get(i));
+              }
+              break;
+            case 'case':
+              $('section nav .silicone input:first').click().change();
+              apply_product_id_to_target(shop_ids, $('.silicone', c));
+              break;
+            case 'acrylic':
+              $('section nav .acrylic input:first').click().change();
+              apply_product_id_to_target(shop_ids, $('.acrylic', c));
+              break;
+          }
+        }
+      });
+    },
+
     init: function() {
+      c = $('form.controller');
 
-      $('nav h4 a.tooltip').tipsy({
-        gravity: 'w',
-        delayIn: 250,
-        delayOut: 250
-      });
+      var hash = location.hash.slice(1);
 
-      $.each(product.silicone, function(i, product) {
-        $('nav .silicone ul').append(color_li(product));
-      });
-
-      $.each(product.acrylic, function(i, product) {
-        $('nav .acrylic ul').append(color_li(product));
-      });
-
-      $.each(product.button, function(i, product) {
-        $('nav .buttons ul').append(color_li(product));
-      });
-
-      $('nav .color[title="Clear"]').tipsy({
-        gravity: 'e',
-        delayIn: 0,
-        delayOut: 250,
-        trigger: 'manual'
-      }).tipsy("show");
-      $('div.tipsy.tipsy-e').css('z-index', 2);
+      setup_colors();
+      setup_clicks();
 
       $('nav input').change(update_price);
       $('nav .buttons input').change(update_buttons);
@@ -175,64 +270,27 @@ MF = window.MF ? MF : {};
       $('nav .acrylic input').change(update_acrylic);
       $('nav .controller input').change(update_controller);
 
+      $('nav .palette input, form.controller input').change(updateShareLink);
+
       attach_drop_event('.controller .silicone', "nav .silicone");
       attach_drop_event('.controller .acrylic', "nav .acrylic");
       attach_drop_event('.controller .button', "nav .buttons");
-
       $('nav .color').draggable({
         helper: "clone"
-      });
-
-      $('nav .buttons .color').click(function() {
-        $(this).addClass('selected').siblings().removeClass('selected');
-      });
-
-      $('form.controller .button').click(function() {
-        var color = $('nav .buttons .color.selected');
-        if (color) {
-          self.apply_color_to_target(color, $(this));
-        }
-      });
-
-      $('nav .silicone .color').click(function() {
-        self.apply_color_to_target($(this), $('.controller .silicone'));
-      });
-
-      $('nav .acrylic .color').click(function() {
-        self.apply_color_to_target($(this), $('.controller .acrylic'));
       });
 
       self.random();
       $('section nav .buttons input:eq(1)').click().change();
       $('section nav .silicone input:eq(1)').click().change();
       $('section nav .acrylic input:eq(1)').click().change();
+
+      if(hash !== '') {
+        self.deserialize(hash);
+      }
     },
 
-    apply_color_to_target: function (color_el, target) {
-      if (target.is(".button") && !are_buttons_selected()) {
-        return;
-      }
-      if (target.is(".silicone") && !is_case_selected()) {
-        return;
-      }
-      if (target.is(".acrylic") && !is_acrylic_selected()) {
-        return;
-      }
-
-      var color = color_el.attr('data-color');
-      var color_name = color_el.attr('title');
-      var shop_id = color_el.attr('data-shop-id');
-
-      target.css('background', color);
-      $('input[name=id[]]:first', target)
-              .val(shop_id)
-              .attr('data-color-name', color_name)
-              .change();
-    },
 
     get_note:function() {
-      var c = $('.controller');
-
       var note = $.trim($('#note').val());
 
       if (note.length > 0) {
@@ -283,53 +341,21 @@ MF = window.MF ? MF : {};
       $('section nav .silicone input:first').click().change();
       $('section nav .acrylic input:first').click().change();
 
-      $('.colorable').each(function() {
-        var that = $(this);
-        var mf_class = '';
-
-        $.each(['silicone', 'acrylic', 'button'], function(i, c) {
-          if (that.hasClass(c)) {
-            mf_class = c;
-          }
+      condenseChanges(function(){
+        $('.button.colorable', c).each(function(i, el){
+          apply_color_to_target($('section nav .buttons .color').random(), $(el));
         });
 
-        var rand = Math.floor(Math.random() * product[mf_class].length);
-        apply_product_to_target(that, mf_class, rand);
-      });
-    },
-
-    mouse_intro: function() {
-      var $cursor = $('#cursor').fadeIn();
-
-      $cursor.animate({
-        left: '484px',
-        top: '589px'
-      }, {
-        duration: 3000,
-        queue: true,
-        complete: function() {
-          $(this).attr('class', 'finger');
-          setTimeout(function() {
-            $cursor.attr('class', 'finger_with_color');
-          }, 1000);
-        }
-      });
-
-      $cursor.delay(1000).animate({
-        left: '565px',
-        top: '303px'
-      }, {
-        duration: 3000,
-        queue: true,
-        complete: function() {
-          $(this).attr('class', 'rock_on');
-          setTimeout(function() {
-            $cursor.hide();
-          }, 2000);
-          $('section .button.col_2.row_1').css('background', '#51B169');
-        }
+        apply_color_to_target($('section nav .silicone .color').random(), $('.silicone.colorable', c));
+        apply_color_to_target($('section nav .acrylic .color').random(), $('.acrylic.colorable', c));
       });
     }
-
   };
+
+  $.fn.random = function(){
+    var random_element_index = Math.floor(Math.random() * $(this).size());
+    var random_element = $(this).get(random_element_index);
+    return $(random_element);
+  };
+
 })(jQuery);
