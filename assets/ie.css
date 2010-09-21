@@ -1,0 +1,8 @@
+#index .guarantees div {
+	display: block;
+	float: left;
+}
+
+#product form input#add {
+	padding-left:200px;
+}

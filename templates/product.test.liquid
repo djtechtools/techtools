@@ -1,0 +1,52 @@
+
+0{{product.midifighter-diy-kit.title}}
+1{{products.midifighter-diy-kit.title}}
+2{{midifighter-diy-kit.title}}
+
+<ul>
+{% for product in collections['midi-controllers'].products %}
+    <li>{{product.handle}}</li>
+{% endfor %}
+</ul>
+
+<ul style="display:none">
+	<li>product.id <span>{{product.id}}</span></li>
+	<li>product.title <span>{{product.title}}</span></li>
+	<li>product.handle <span>{{product.handle}}</span></li>
+	<li>product.type <span>{{product.type}}</span></li>
+	<li>product.vendor <span>{{product.vendor}}</span></li>
+	<li>product.price <span>{{product.price}}</span></li>
+	<li>product.price_min <span>{{product.price_min}}</span></li>
+	<li>product.compare_at_price_min <span>{{product.compare_at_price_min}}</span></li>
+	<li>product.price_max <span>{{product.price_max}}</span></li>
+	<li>product.compare_at_price_max <span>{{product.compare_at_price_max}}</span></li>
+	<li>product.price_varies <span>{{product.price_varies}}</span></li>
+	<li>product.compare_at_price_varies <span>{{product.compare_at_price_varies}}</span></li>
+	<li>product.url <span>{{product.url}}</span></li>
+	<li>product.featured_image <span>{{product.featured_image}}</span></li>
+	<li>product.images <span>{{product.images}}</span></li>
+	<li>product.description <span>{{product.description}}</span></li>
+	<li>product.content <span>{{product.content}}</span></li>
+	<li>product.variants <span>{{product.variants}}</span>
+		{% for variant in product.variants %}
+			<ul>
+				<li>variant.id <span>{{variant.id}}</span></li>
+				<li>variant.title <span>{{variant.title}}</span></li>
+				<li>variant.price <span>{{variant.price}}</span></li>
+				<li>variant.compare_at_price <span>{{variant.compare_at_price}}</span></li>
+				<li>variant.available <span>{{variant.available}}</span></li>
+				<li>variant.inventory_management <span>{{variant.inventory_management}}</span></li>
+				<li>variant.inventory_quantity <span>{{variant.inventory_quantity}}</span></li>
+				<li>variant.weight <span>{{variant.weight}}</span></li>
+				<li>variant.sku <span>{{variant.sku}}</span></li>
+				<li>variant.option1 <span>{{variant.option1}}</span></li>
+				<li>variant.option2 <span>{{variant.option2}}</span></li>
+				<li>variant.option3 <span>{{variant.option3}}</span></li>
+			</ul>
+		{% endfor %}
+	</li>
+	<li>product.available <span>{{product.available}}</span></li>
+	<li>product.collections <span>{{product.collections}}</span></li>
+	<li>product.tags <span>{{product.tags}}</span></li>
+	<li>product.options <span>{{product.options}}</span></li>
+</ul>

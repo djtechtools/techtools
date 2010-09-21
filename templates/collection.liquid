@@ -1,0 +1,54 @@
+<div class="generic_container">
+	
+	<div class="header">
+		<h3>{{ collection.title }}</h3>
+		<p>
+			{% if collection.description.size > 0 %}
+				{{ collection.description }}
+			{% endif %}
+		</p>
+	</div>	
+	
+	{% if collection.products.size == 0 %}
+		<h3>No products in this collection.</h3>
+	{% else %}
+		{% for product in collection.products %}
+		<div class="row {% cycle 'even', 'odd' %}">
+		
+			<div class="preview">
+				<a href="{{ product.url | within: collection }}">
+					<img src="{{ product.images.last | product_img_url: 'medium' }}" alt="{{ product.title | escape }}" />
+				</a>
+			</div>
+			
+			<div class="description">
+				<p>
+					<a href="{{ product.url | within: collection }}">
+						<em>{{ product.title }}</em>
+						{{ product.description | strip_html | truncate: 120 }}
+					</a>
+				</p>
+				<p class="price">
+					{{ product.price | money }}
+					{% if product.compare_at_price_max > product.price %}
+						<del>{{ product.compare_at_price_max | money }}</del>
+					{% endif %}
+				</p>
+			</div>
+	
+		</div>
+		{% endfor %}
+	{% endif %}
+</div>
+
+<script type="text/javascript">
+	$(window).load( function() {
+		$('#collection .row').each( function(){
+			var marginTop = ($(this).height() / 2) - ($('.description', this).height() / 2);
+			if (marginTop < 0) return;
+			$('.description', this).css('margin-top', marginTop + 'px');
+		});
+	});
+
+</script>
+

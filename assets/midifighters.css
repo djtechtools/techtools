@@ -1,0 +1,256 @@
+a {
+	color: #171717;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+section#midifighter object,
+section#midifighter #ytplayerholder{
+    margin-top: 20px;
+}
+
+#container #midifighter #cursor {
+    display: none;
+    position: absolute;
+    left: 150px; top: 125px;
+    width: 16px; height: 24px;
+    background:url("/images/cursors/arrow.png") no-repeat scroll 0 0 transparent;
+    z-index: 99;
+}
+
+#container #midifighter #cursor.finger {
+    background:url("/images/cursors/finger_pointer.png") no-repeat scroll 0 0 transparent;
+}
+
+#container #midifighter #cursor.finger_with_color {
+    width: 30px;
+    height: 30px;
+    background: #51B169 url("/images/cursors/finger_pointer.png") no-repeat scroll 6px 6px;
+}
+
+#container #midifighter #cursor.rock_on {
+    background:url("/images/cursors/rock_on.png") no-repeat scroll 0 0 transparent;
+}
+
+section#midifighter {
+    position: relative;
+    width: 680px;
+    clear: both;
+    height: 534px;
+    margin: 30px auto;
+    display: block;
+    font-family: Verdana, sans-serif;
+}
+
+section#midifighter nav {
+    float: left;
+    width: 210px;
+    position: relative;
+    left: -20px;
+}
+
+section#midifighter nav .palette,
+section#midifighter nav .options {
+    clear:both;
+    padding-top:2em;
+    position:relative;
+    z-index:99;
+}
+
+section#midifighter h4 {
+    clear:both;
+    overflow:hidden;
+    padding: 2px 0;
+    text-transform:none;
+    font-size: 14px;
+}
+
+section#midifighter nav h4 input,
+section#midifighter nav h4 a.tooltip,
+section#midifighter nav h4 a.tooltip_ish {
+    margin-left: 10px;
+}
+
+section#midifighter nav h4 .title,
+section#midifighter .randomize {
+    display:block;
+    float:right;
+    font-size:14px;
+    font-weight:normal;
+    text-align: right;
+}
+
+section#midifighter nav h4 input {
+    float:right;
+    position:relative;
+    top:1px;
+}
+
+section#midifighter nav h4 a.tooltip,
+section#midifighter nav h4 a.tooltip_ish {
+    border:1px solid #000000;
+    float:right;
+    font-size:12px;
+    padding:0 4px;
+    cursor: default;
+}
+
+section#midifighter form.controller {
+    float:right;
+}
+
+#midifighter .colorable {
+    background-repeat: no-repeat;
+}
+
+#midifighter .controller .silicone {
+    width:450px;
+    border: 2px solid #000000;
+    border-radius:18px;
+    -moz-border-radius:18px;
+    -webkit-border-radius:18px;
+    height:450px;
+    position:relative;
+    background-position: -2px -2px !important;
+}
+
+#midifighter .controller .silicone.removed {
+    border: none;
+    margin: 2px;
+}
+
+#midifighter .controller .acrylic {
+    height:426px;
+    border: 2px solid #000000;
+    border-radius:17px;
+    -moz-border-radius:17px;
+    -webkit-border-radius:17px;
+    background-position: -2px -2px !important;
+    width:426px;
+    left:10px;
+    position:absolute;
+    top:10px;
+}
+
+section#midifighter .button {
+    height:82px;
+    width:82px;
+    position:absolute;
+    background-position: 0px 0px;
+}
+
+.button.row_0 { top: 36px }
+.button.row_1 { top: 127px }
+.button.row_2 { top: 217px }
+.button.row_3 { top: 307px }
+
+.button.col_0 { left: 37px }
+.button.col_1 { left: 126px }
+.button.col_2 { left: 216px }
+.button.col_3 { left: 306px }
+
+
+#midifighter #color_selector {}
+
+#midifighter #color_selector ul {
+    position: relative;
+    top: 4px;
+}
+
+#midifighter #color_selector li {
+    float: right;
+    margin: 0 0 5px 5px;
+    border: 1px solid #333;
+}
+
+
+#midifighter #color_selector .color {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+}
+
+#midifighter #color_selector li:hover.color {
+    height:30px;
+    width:30px;
+    margin: -5px -5px 0 0;
+}
+
+#midifighter #color_selector li.selected.color {
+    border-width: 4px;
+    margin: -3px -3px 2px 2px;
+}
+
+#midifighter #color_selector li:hover.selected.color {
+    height:20px;
+    width:20px;
+}
+
+#midifighter #color_selector .buttons .color {
+    background-position: -38px -19px !important;
+}
+
+#midifighter #color_selector .acrylic .color {
+    background-position: -33px -8px !important;
+}
+
+
+#midifighter .checkout,
+#midifighter .random {
+    clear: both;
+    float: right;
+    margin: 13px 13px 0 0;
+    padding: 0;
+}
+
+#midifighter .checkout .total {
+    font-size:15px;
+    padding-right:10px;
+    position:relative;
+    top:2px;
+}
+
+
+#midifighter .randomize {
+    border-radius:6px;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    background:none repeat scroll 0 0 #000000;
+    color:#FFFFFF;
+    padding:2px 7px 4px;
+}
+
+.add_to_cart {
+    background-color:#FF9000;
+    color:#FFFFFF;
+    padding:6px 26px 4px;
+    position:relative;
+    font-size:11px;
+    font-family:Helvetica, Arial, sans-serif;
+    vertical-align: bottom;
+    font-weight:bold;
+    text-transform:uppercase;
+    border: none;
+    text-decoration: none;
+    float: right;
+    width: 145px;
+    text-align: center;
+}
+
+.add_to_cart:hover {
+    background-color:#000000;
+    color:#FFFFFF;
+}
+
+#fb_like {
+    bottom:6px;
+    left:-22px;
+    position:absolute;
+}
+
+#fb_like iframe {
+    height: 25px !important;
+}
