@@ -206,6 +206,10 @@ section#midifighter .button {
     padding: 0;
 }
 
+#midifighter .checkout {
+	width: 315px;
+}
+
 #midifighter .checkout .total {
     font-size:15px;
     padding-right:10px;

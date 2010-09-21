@@ -19,7 +19,12 @@
 		<span class="price">{{ product.price | money }}</span>
 	</h2>
 
-  	{{ product.description }}
+    <div class="content">
+        {% section 'description' %}
+            {{ product.description }}
+        {% endsection %}
+    </div>
+
 
 	<form action="/cart/add" method="post" name="cartadd">
 		<select name="id">
@@ -37,7 +42,7 @@
 					</option>
 				{% endif %}
 			{% endfor %}
-		</select> 
+		</select>
 		{% if product.available %}
 			<input type="submit" name="add" value="ADD TO CART" class="action" id="add">
 		{% else %}
