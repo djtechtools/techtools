@@ -24,12 +24,13 @@
     var i = new Image();
         i.src = '{{'clear_acrylic.png' | asset_url }}';
 
-        var product = {
-            silicone: [{"name":"Blue","shop_id":45735932,"color":"#00A5DB"},{"name":"White","shop_id":45735952,"color":"#FFF"},{"name":"Black","shop_id":45377522,"color":"#000"},{"name":"Red","shop_id":45735972,"color":"#E60003"},{"name":"Orange","shop_id":45735982,"color":"#EA5A00"},{"name":"Clear","shop_id":46524262,"color":"#F1F1F1"}],
-            acrylic:  [{"name":"White","shop_id":46523902,"color":"url('{{'white_acrylic.png' | asset_url}}')"},{"name":"Black","shop_id":46523862,"color":"url('{{'black_acrylic.png' | asset_url}}')"},{"name":"Cool Grey","shop_id":46523932,"color":"url('{{'grey_acrylic.png' | asset_url}}')"},{"name":"Red","shop_id":46523792,"color":"url('{{'red_acrylic.png' | asset_url}}')"},{"name":"Yellow","shop_id":46532122,"color":"url('{{'yellow_acrylic.png' | asset_url}}')"},{"name":"Electric Blue","shop_id":46524032,"color":"url('{{'deepblue_acrylic.png' | asset_url}}')"},{"name":"Powder Blue","shop_id":46523822,"color":"url('{{'powderblue_acrylic.png' | asset_url}}')"},{"name":"Goldfish Orange","shop_id":46524002,"color":"url('{{'orange_acrylic.png' | asset_url}}')"}],
-            button:   [{"name":"Blue","x":null,"y":null,"shop_id":21453812,"color":"url('{{'blue_button.png' | asset_url}}')"},{"name":"White","x":null,"y":null,"shop_id":21453832,"color":"url('{{'white_button.png' | asset_url}}')"},{"name":"Orange","x":null,"y":null,"shop_id":21453882,"color":"url('{{'orange_button.png' | asset_url}}')"},{"name":"Green","x":null,"y":null,"shop_id":21453912,"color":"url('{{'green_button.png' | asset_url}}')"},{"name":"Red","x":null,"y":null,"shop_id":21453922,"color":"url('{{'red_button.png' | asset_url}}')"},{"name":"Yellow","x":null,"y":null,"shop_id":21453962,"color":"url('{{'yellow_button.png' | asset_url}}')"},{"name":"Purple","x":null,"y":null,"shop_id":21453992,"color":"url('{{'purple_button.png' | asset_url}}')"},{"name":"Black","x":null,"y":null,"shop_id":26215142,"color":"url('{{'black_button.png' | asset_url}}')"}]
-        ]
-    }
+    var product = {
+        controller:{"shop_id":46889992},
+        silicone: [{"name":"Blue","shop_id":45735932,"color":"#00A5DB"},{"name":"White","shop_id":45735952,"color":"#FFF"},{"name":"Black","shop_id":45377522,"color":"#000"},{"name":"Red","shop_id":45735972,"color":"#E60003"},{"name":"Orange","shop_id":45735982,"color":"#EA5A00"},{"name":"Clear","shop_id":46524262,"color":"#F1F1F1"}],
+        acrylic:  [{"name":"White","shop_id":46523902,"color":"url('{{'white_acrylic.png' | asset_url}}')"},{"name":"Black","shop_id":46523862,"color":"url('{{'black_acrylic.png' | asset_url}}')"},{"name":"Cool Grey","shop_id":46523932,"color":"url('{{'grey_acrylic.png' | asset_url}}')"},{"name":"Red","shop_id":46523792,"color":"url('{{'red_acrylic.png' | asset_url}}')"},{"name":"Yellow","shop_id":46532122,"color":"url('{{'yellow_acrylic.png' | asset_url}}')"},{"name":"Electric Blue","shop_id":46524032,"color":"url('{{'deepblue_acrylic.png' | asset_url}}')"},{"name":"Powder Blue","shop_id":46523822,"color":"url('{{'powderblue_acrylic.png' | asset_url}}')"},{"name":"Goldfish Orange","shop_id":46524002,"color":"url('{{'orange_acrylic.png' | asset_url}}')"}],
+        button:   [{"name":"Blue","x":null,"y":null,"shop_id":21453812,"color":"url('{{'blue_button.png' | asset_url}}')"},{"name":"White","x":null,"y":null,"shop_id":21453832,"color":"url('{{'white_button.png' | asset_url}}')"},{"name":"Orange","x":null,"y":null,"shop_id":21453882,"color":"url('{{'orange_button.png' | asset_url}}')"},{"name":"Green","x":null,"y":null,"shop_id":21453912,"color":"url('{{'green_button.png' | asset_url}}')"},{"name":"Red","x":null,"y":null,"shop_id":21453922,"color":"url('{{'red_button.png' | asset_url}}')"},{"name":"Yellow","x":null,"y":null,"shop_id":21453962,"color":"url('{{'yellow_button.png' | asset_url}}')"},{"name":"Purple","x":null,"y":null,"shop_id":21453992,"color":"url('{{'purple_button.png' | asset_url}}')"},{"name":"Black","x":null,"y":null,"shop_id":26215142,"color":"url('{{'black_button.png' | asset_url}}')"}]
+        assembly:  {"shop_id":47673432}
+    };
 
     //]]>
 </script>
@@ -40,7 +41,7 @@
     }
 
     .controller .acrylic.removed {
-        background: url({{ 'clear_acrylic.png' | asset_url }} ) no-repeat scroll - 1 px - 2 px;
+        background: url({{ 'clear_acrylic.png' | asset_url }} ) no-repeat scroll -1px -2px;
     }
 
 </style>
@@ -99,13 +100,12 @@
         <div class="controller options">
           <h4>
             <a href="#" class="tooltip" title="We build the Midi-Fighter for you. Custom built midi fighter's will receive a Certificate of Authenticity, which is hand signed and numbered with a polaroid of your layout. Every certificate is scanned into an online registry of Midi-Fighters.">?</a>
-            <input checked="checked" data-shop-id="47673432" id="assembled_15" name="assembled" type="radio" value="15"/>
+            <input checked="checked" id="assembled_15" name="assembled" type="radio" value="15"/>
             <label for="assembled_15" class="title">Assembled [$15]</label>
-
           </h4>
           <h4>
             <a href="#" class="tooltip" title="You will get everything you need to fully assemble a midi-fighter on your very own. It requires no soldering or mechanical knowledge - just 20 minutes, an open table and the willingness to be a kid again.">?</a>
-            <input data-shop-id="29112622" id="assembled_0" name="assembled" type="radio" value="0"/>
+            <input id="assembled_0" name="assembled" type="radio" value="0"/>
             <label for="assembled_0" class="title">DIY Kit [$0]</label>
           </h4>
         </div>
@@ -124,7 +124,7 @@
       <form class="controller" name="cartadd" method="post" action="/cart/add">
         <!-- defaults to diy assembly -->
         <input id="controller_assembly_input" type="hidden" value=""/>
-        <input id="controller_input" type="hidden" name="id[]" value="46889992"/>
+        <input id="controller_input" type="hidden" name="id[]" value=""/>
 
         <div class="silicone colorable">
           <input id="silicone_input" class="silicone" type="hidden" name="id[]"/>

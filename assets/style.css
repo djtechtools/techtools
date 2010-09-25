@@ -768,6 +768,11 @@ form input.action:hover,
 
 #product\.midifighter {}
 
+    #product\.midifighter #midifighter {
+        width: 680px;
+        margin: 0 auto;
+    }
+
     #product\.midifighter .product {
         margin: 2em auto;
     }

@@ -99,13 +99,13 @@ MF = window.MF ? MF : {};
     togglePresence(is_acrylic_selected(), _mf.acrylic, $('.controller .acrylic'));
   }
 
-  function update_controller() {
+  function update_assembly() {
     var c = $('#controller_assembly_input');
     if (is_diy_selected()) {
       c.removeAttr('name');
     }
     else {
-      c.attr('name', 'id[]').val(47673432);
+      c.attr('name', 'id[]').val(product.assembly.shop_id);
     }
   }
 
@@ -205,7 +205,7 @@ MF = window.MF ? MF : {};
     update_buttons();
     update_case();
     update_acrylic();
-    update_controller();
+    update_assembly();
     update_persistence();
   }
 
@@ -272,11 +272,13 @@ MF = window.MF ? MF : {};
       setup_colors();
       setup_clicks();
 
+      $('#controller_input', c).val(product.controller.shop_id);
+
       $('nav input').change(update_price);
       $('nav .buttons input').change(update_buttons);
       $('nav .silicone input').change(update_case);
       $('nav .acrylic input').change(update_acrylic);
-      $('nav .controller input').change(update_controller);
+      $('nav .controller input').change(update_assembly);
 
       $('nav .palette input, form.controller input').change(update_persistence);
 

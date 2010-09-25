@@ -29,6 +29,7 @@ section#midifighter nav {
     float: left;
     width: 210px;
     position: relative;
+    left: -10px;
 }
 
 section#midifighter nav > div {
@@ -195,6 +196,10 @@ section#midifighter .button {
     padding: 0;
 }
 
+#midifighter .checkout {
+	width: 315px;
+}
+
 #midifighter .checkout .total {
     font-size:15px;
     padding-right:10px;
@@ -215,7 +220,6 @@ section#midifighter .button {
 #container .add_to_cart {
     background-color:#FF9000;
     color:#FFFFFF;
-    padding:6px 26px 4px;
     position:relative;
     font-size:11px;
     font-family:Helvetica, Arial, sans-serif;
@@ -225,6 +229,7 @@ section#midifighter .button {
     border: none;
     text-decoration: none;
     float: right;
+    margin: 0;
     width: 145px;
     text-align: center;
 }
