@@ -81,12 +81,12 @@ MF = window.MF ? MF : {};
       total += parseFloat($(this).val());
     });
     total = Math.ceil(total);
-    $('#checkout .value').text(total);
+    $('#midifighter aside.checkout .value').text(total);
   }
 
   function update_buttons() {
     $('.controller .button').each(function(i, el) {
-      _mf.buttons[i] = _mf.buttons[i] ? _mf.buttons[i] : {};
+      _mf.buttons[i] = _mf.buttons[i] || {};
       togglePresence(are_buttons_selected(), _mf.buttons[i], $(el));
     });
   }
@@ -99,17 +99,40 @@ MF = window.MF ? MF : {};
     togglePresence(is_acrylic_selected(), _mf.acrylic, $('.controller .acrylic'));
   }
 
+  function update_controller() {
+    var c = $('#controller_assembly_input');
+    if (is_diy_selected()) {
+      c.removeAttr('name');
+    }
+    else {
+      c.attr('name', 'id[]').val(47673432);
+    }
+  }
+
+  function update_persistence(){
+    var serialized = self.serialize();
+    self.cookie(serialized);
+
+    var link = location.href.split('#')[0] + '#' + serialized;
+    $('#share_link').val(link);
+
+    var version = parseInt($.browser.version.replace(/\./g, ''));
+    if(!$.browser.mozilla || !(version < 1929)) {
+      location.hash = serialized;
+    }
+  }
+
   function togglePresence(on, obj, $el) {
     if (on) {
-      if ($.isEmptyObject(obj)) {
-        return;
+      //only update it it's currently blank
+      var shop_id = $('input:first', $el).val();
+      if(!$.isEmptyObject(obj) && shop_id == '') {
+        $('input:first', $el).attr('name', 'id[]');
+        $('input:first', $el).val(obj.shop_id);
+        $('input:first', $el).attr('data-color-name', obj.color_name);
+        $('input:first', $el);
+        $el.removeClass('removed').css('background', obj.color).attr('title', obj.color_name);
       }
-
-      $('input:first', $el).attr('name', 'id[]');
-      $('input:first', $el).val(obj.shop_id);
-      $('input:first', $el).attr('data-color-name', obj.color_name);
-      $('input:first', $el);
-      $el.removeClass('removed').css('background', obj.color).attr('title', obj.color_name);
     }
     else {
       $('input:first', $el).removeAttr('name');
@@ -137,16 +160,6 @@ MF = window.MF ? MF : {};
 
   function is_acrylic_selected() {
     return !$('#acrylic_top_0').is(':checked');
-  }
-
-  function update_controller() {
-    var c = $('#controller_assembly_input');
-    if (is_diy_selected()) {
-      c.removeAttr('name');
-    }
-    else {
-      c.attr('name', 'id[]').val($('nav .controller input:first').val());
-    }
   }
 
   function setup_colors(){
@@ -182,29 +195,26 @@ MF = window.MF ? MF : {};
     $('nav .acrylic .color').click(function() {
       apply_color_to_target($(this), $('.controller .acrylic'));
     });
-
-  }
-
-  function updateShareLink(){
-    var hash = self.serialize();
-    var link = location.href.split('#')[0] + '#' + hash;
-    $('#share_link').val(link);
-
-    var version = parseInt($.browser.version.replace(/\./g, ''));
-    if(!$.browser.mozilla || !(version < 1929)) {
-      location.hash = hash;
-    }
   }
 
   function condenseChanges(callback) {
     FIRE_CHANGES = false;
     callback.call();
     FIRE_CHANGES = true;
-    updateShareLink();
+    update_price();
+    update_buttons();
+    update_case();
+    update_acrylic();
+    update_controller();
+    update_persistence();
   }
 
   var c;
   var self = MF.Config = {
+
+    cookie:function(value){
+      return $.cookie('MF.Config', value);
+    },
 
     serialize:function(){
       var serialization = '';
@@ -259,8 +269,6 @@ MF = window.MF ? MF : {};
     init: function() {
       c = $('form.controller');
 
-      var hash = location.hash.slice(1);
-
       setup_colors();
       setup_clicks();
 
@@ -270,7 +278,7 @@ MF = window.MF ? MF : {};
       $('nav .acrylic input').change(update_acrylic);
       $('nav .controller input').change(update_controller);
 
-      $('nav .palette input, form.controller input').change(updateShareLink);
+      $('nav .palette input, form.controller input').change(update_persistence);
 
       attach_drop_event('.controller .silicone', "nav .silicone");
       attach_drop_event('.controller .acrylic', "nav .acrylic");
@@ -279,18 +287,24 @@ MF = window.MF ? MF : {};
         helper: "clone"
       });
 
-      self.random();
-      $('section nav .buttons input:eq(1)').click().change();
-      $('section nav .silicone input:eq(1)').click().change();
-      $('section nav .acrylic input:eq(1)').click().change();
+      var hash = location.hash.slice(1);
+      var cookie = self.cookie();
 
-      if(hash !== '') {
+      if (hash !== '') {
         self.deserialize(hash);
+      }
+      else if( cookie !== '' ) {
+        self.deserialize(cookie);
+      }
+      else {
+        self.random();
+        $('section nav .buttons input:eq(1)').click().change();
+        $('section nav .silicone input:eq(1)').click().change();
+        $('section nav .acrylic input:eq(1)').click().change();
       }
     },
 
-
-    get_note:function() {
+    getNote:function() {
       var note = $.trim($('#note').val());
 
       if (note.length > 0) {
@@ -331,7 +345,8 @@ MF = window.MF ? MF : {};
     },
 
     submit: function() {
-      Shopify.updateCartNote(self.get_note(), function() {
+      var note = self.getNote();
+      Shopify.updateCartNote(note, function() {
         $('section form.controller').submit();
       });
     },

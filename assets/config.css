@@ -195,10 +195,6 @@ section#midifighter .button {
     padding: 0;
 }
 
-#midifighter .checkout {
-	width: 315px;
-}
-
 #midifighter .checkout .total {
     font-size:15px;
     padding-right:10px;
@@ -216,7 +212,7 @@ section#midifighter .button {
     padding:2px 7px 4px;
 }
 
-.add_to_cart {
+#container .add_to_cart {
     background-color:#FF9000;
     color:#FFFFFF;
     padding:6px 26px 4px;
@@ -233,7 +229,7 @@ section#midifighter .button {
     text-align: center;
 }
 
-.add_to_cart:hover {
+#container .add_to_cart:hover {
     background-color:#000000;
     color:#FFFFFF;
 }
@@ -247,3 +243,4 @@ section#midifighter .button {
 #fb_like iframe {
     height: 25px !important;
 }
+
