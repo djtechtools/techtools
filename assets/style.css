@@ -1,7 +1,7 @@
 html, body {
 	color: #000;
 	font-size: 12px;
-	font-family: Verdana, sans-serif;
+	font-family: Arial, sans-serif;
 	background: #2C272B;
 }
 
@@ -75,6 +75,10 @@ sup {
 
 .description ul li {
      list-style-type: square;
+}
+
+.product .description ul li p {
+     padding-bottom: 5px;
 }
 
 /* HTML5 tags */
@@ -762,16 +766,14 @@ form input.action:hover,
 		background-color: #000;
 	}
 
-	.product .description ul li p,
-	#product\.midifighter .description ul li p, {
-	     padding-bottom: 5px;
+#product\.midifighter {
+		font-family: Verdana;
 	}
 
-#product\.midifighter {}
-
     #product\.midifighter #midifighter {
-        width: 680px;
+        width: 695px;
         margin: 0 auto;
+        position: relative;
     }
 
     #product\.midifighter .product {
@@ -781,6 +783,7 @@ form input.action:hover,
     #product\.midifighter .preview {
         width: 100%;
         overflow: hidden;
+        margin-top: 2em;
         margin-bottom: 2em;
         clear: both;
     }

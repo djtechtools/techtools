@@ -238,6 +238,7 @@ MF = window.MF ? MF : {};
   $.fn.applyStyle = function(product) {
     return $(this).
             css('background', css(product.color)).
+            attr('title', product.name).
             attr('data-title', product.name).
             attr('data-color', product.color).
             attr('data-shop-id', product.shop_id).
@@ -269,7 +270,12 @@ MF = window.MF ? MF : {};
         $(this).apply(product);
       } else {
         var ref = $(this).attr('data-ref');
-        $(this).addClass('removed').css('background', '').find('input.'+ref+'_input').remove();
+        $(this).
+          addClass('removed').
+          attr('title', '').
+          css('background', '').
+          find('input.'+ref+'_input').
+          remove();
       }
     });
 

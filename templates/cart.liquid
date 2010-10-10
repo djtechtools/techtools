@@ -1,39 +1,41 @@
 <div class="generic_container">
-	
+
 	<div class="header">
-	{% if cart.item_count == 0 %} 
+	{% if cart.item_count == 0 %}
 		<h3>Your cart is empty&nbsp;&nbsp;&nbsp; <span>:-(</span></h3>
 	{% else %}
 		<h3>Your cart</h3>
 		<a class="clear" href="#" title="Remove everything from your cart.">Clear Cart</a>
 	{% endif %}
 	</div>
-	
-	{% if cart.item_count > 0 %} 
+
+	{% if cart.item_count > 0 %}
 	<form action="/cart" method="post" id="cartform" name="cartform">
-		{% for item in cart.items %} 
+		{% for item in cart.items %}
 		<div class="row {% cycle 'even', 'odd' %} {% if forloop.last %}last{% endif %}">
-		
+
 			<div class="preview">
 				<a href="{{ item.product.url | within: collections.all }}">
 					<img src="{{ item.product.images.last | product_img_url: 'medium' }}" alt="{{ item.title | escape }}" />
 				</a>
 			</div>
-			
+
 			<div class="description">
 				<h3>
 					<a href="{{ item.product.url | within: collections.all }}">
-						{{ item.title }} - {{ item.variant.title }}
+                        <span class="title">
+                             {{ item.title }}
+                        </span>
 						<span class="price">
 							{{ item.price | money }}
 						</span>
 					</a>
 				</h3>
-				
+
 				<p>
 					{{ item.product.description | strip_html | truncate: 450 }}
 				</p>
-				
+
 				<div class="updater">
 					<input type="hidden" name="id" value="{{ item.variant.id }}" />
 					<input type="text" class="field" name="updates[]" id="updates_{{ item.variant.id }}" value="{{ item.quantity }}" onfocus="this.select();" />
@@ -51,7 +53,7 @@
 		{% endfor %}
 
                 <input type="hidden" id="notes" name="note" value="{{ cart.note }}" />
-		
+
 		<div class="footer">
 			<h3>Total: <span class="price">{{ cart.total_price | money }} {{ shop.currency }}</span></h3>
 			<input id="checkout" name="checkout" type="submit" class="action" value="PROCEED TO CHECKOUT"/>
@@ -59,6 +61,15 @@
 		</div>
 	</form>
 	<script type="text/javascript">
+        var crapToRemove = /([^\/]*).*(http:\/\/.*|#.*)/i;
+        $('form .description h3 a span.title').each(function(){
+            var text = $.trim($(this).text());
+            var result = crapToRemove.exec(text);
+            if(result) {
+                $(this).text(result[1])
+            }
+        });
+
 		$('a.clear').click(function(){
 		     Shopify.updateCartNote(' _ ', function(){
                           Shopify.clear(function(){
