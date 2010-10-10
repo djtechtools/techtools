@@ -1,13 +1,24 @@
-
-0{{product.midifighter-diy-kit.title}}
-1{{products.midifighter-diy-kit.title}}
-2{{midifighter-diy-kit.title}}
-
-<ul>
-{% for product in collections['midi-controllers'].products %}
-    <li>{{product.handle}}</li>
+var product = {};
+<br/>
+{% for link in linklists.midifighter.links %}
+	{% assign product = link.object %}
+    {% if product.variants.length == 1 %}
+		product["{{product.handle}}"] = { 	"shop_id": {{product.variants.first.id}},
+					          				"name": "{{product.variants.first.title}}",
+						  					"price": {{product.variants.first.price}}   };
+	{% else %}
+		product["{{product.handle}}"] = [
+			{% for variant in product.variants %}
+				{ "shop_id": {{variant.id}},
+                  "name": "{{variant.option1}}",
+                  "color": "{{variant.option2}}",
+                  "price": {{variant.price}} }{% unless forloop.last %},{% endunless %}
+			{% endfor %}		
+		];
+	{% endif %}
+	<br/>
 {% endfor %}
-</ul>
+
 
 <ul style="display:none">
 	<li>product.id <span>{{product.id}}</span></li>

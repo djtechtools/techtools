@@ -77,10 +77,6 @@ sup {
      list-style-type: square;
 }
 
-#product .description ul li p {
-     padding-bottom: 5px;
-}
-
 /* HTML5 tags */
 header, section, footer,
 aside, nav, article, figure {
@@ -322,6 +318,7 @@ form input.action:hover,
 		float: left;
 		width: 128px;
 		padding: 10px;
+		margin: 0;
 		text-align: left;
 	}
 	#index .products .product:hover {
@@ -765,6 +762,10 @@ form input.action:hover,
 		background-color: #000;
 	}
 
+	.product .description ul li p,
+	#product\.midifighter .description ul li p, {
+	     padding-bottom: 5px;
+	}
 
 #product\.midifighter {}
 

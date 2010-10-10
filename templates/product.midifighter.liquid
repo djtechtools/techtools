@@ -5,34 +5,46 @@
 
 <script type="text/javascript">
     //<![CDATA[
-
-    $(function() {
-        MF.Config.init();
-
-        window.fbAsyncInit = function() {
-            FB.init({appId: '113248718719389', status: true, cookie: true, xfbml: true});
-        };
-        (function() {
-            var e = document.createElement('script');
-            e.type = 'text/javascript';
-            e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-            e.async = true;
-            document.getElementById('fb-root').appendChild(e);
-        }());
-    });
-
     var i = new Image();
         i.src = '{{'clear_acrylic.png' | asset_url }}';
 
-    var product = {
-        controller:{"shop_id":46889992},
-        silicone: [{"name":"Blue","shop_id":45735932,"color":"#00A5DB"},{"name":"White","shop_id":45735952,"color":"#FFF"},{"name":"Black","shop_id":45377522,"color":"#000"},{"name":"Red","shop_id":45735972,"color":"#E60003"},{"name":"Orange","shop_id":45735982,"color":"#EA5A00"},{"name":"Clear","shop_id":46524262,"color":"#F1F1F1"}],
-        acrylic:  [{"name":"White","shop_id":46523902,"color":"url('{{'white_acrylic.png' | asset_url}}')"},{"name":"Black","shop_id":46523862,"color":"url('{{'black_acrylic.png' | asset_url}}')"},{"name":"Cool Grey","shop_id":46523932,"color":"url('{{'grey_acrylic.png' | asset_url}}')"},{"name":"Red","shop_id":46523792,"color":"url('{{'red_acrylic.png' | asset_url}}')"},{"name":"Yellow","shop_id":46532122,"color":"url('{{'yellow_acrylic.png' | asset_url}}')"},{"name":"Electric Blue","shop_id":46524032,"color":"url('{{'deepblue_acrylic.png' | asset_url}}')"},{"name":"Powder Blue","shop_id":46523822,"color":"url('{{'powderblue_acrylic.png' | asset_url}}')"},{"name":"Goldfish Orange","shop_id":46524002,"color":"url('{{'orange_acrylic.png' | asset_url}}')"}],
-        button:   [{"name":"Blue","x":null,"y":null,"shop_id":21453812,"color":"url('{{'blue_button.png' | asset_url}}')"},{"name":"White","x":null,"y":null,"shop_id":21453832,"color":"url('{{'white_button.png' | asset_url}}')"},{"name":"Orange","x":null,"y":null,"shop_id":21453882,"color":"url('{{'orange_button.png' | asset_url}}')"},{"name":"Green","x":null,"y":null,"shop_id":21453912,"color":"url('{{'green_button.png' | asset_url}}')"},{"name":"Red","x":null,"y":null,"shop_id":21453922,"color":"url('{{'red_button.png' | asset_url}}')"},{"name":"Yellow","x":null,"y":null,"shop_id":21453962,"color":"url('{{'yellow_button.png' | asset_url}}')"},{"name":"Purple","x":null,"y":null,"shop_id":21453992,"color":"url('{{'purple_button.png' | asset_url}}')"},{"name":"Black","x":null,"y":null,"shop_id":26215142,"color":"url('{{'black_button.png' | asset_url}}')"}]
-        assembly:  {"shop_id":47673432}
-    };
+	var product = {};
+	{% for link in linklists.midifighter.links %}
+		{% assign product = link.object %}
+	    {% if product.variants.length == 1 %}
+			product["{{product.handle}}"] = { 	"shop_id": {{product.variants.first.id}},
+						          				"name": "{{product.variants.first.title}}",
+							  					"price": {{product.variants.first.price}}
+							};
+		{% else %}
+			product["{{product.handle}}"] = [
+				{% for variant in product.variants %}
+					{ "shop_id": {{variant.id}},
+	                  "name": "{{variant.option1}}",
+	                  "color": "{{variant.option2}}",
+	                  "price": {{variant.price}} }{% unless forloop.last %},{% endunless %}
+				{% endfor %}		
+			];
+		{% endif %}
+	{% endfor %}
+
+
+    product["acrylic-top-plate"] = $.map(product["acrylic-top-plate"], function(el, i) {
+        if(el.color === "Default"  || el.shop_id === 56407932) {
+            return null;
+        }
+        return el;
+    });
 
     //]]>
+</script>
+
+<script type="text/javascript" class="exclude">
+    var config;
+    $(function() {
+        config = new MF.Config(product);
+        $('#midifighter').data('instance', config);
+    });
 </script>
 
 <style type="text/css">
@@ -48,196 +60,174 @@
 
 <div class="product">
 
-    <div id="cursor"></div>
+	<section id="midifighter">
 
-    <section id="midifighter">
+	  <nav id="color_selector">
+	    <div class="palette" data-ref="button">
+	      <h4>
+	        <a href="#" class="tooltip" title="Every Midi-Fighter is equipped with high-performance Sanwa arcade buttons which are made in Japan by Dj Samurai warriors.">?</a>
+	        <input checked="checked" id="buttons_1" name="buttons" type="radio" value="1" />
+	        <label class="title" for="buttons_1">Arcade Buttons</label>
 
-      <nav id="color_selector">
+	      </h4>
+	      <h4>
+	        <a href="#" class="tooltip" title="The opposite of having buttons... no buttons.">?</a>
+	        <input id="buttons_0" name="buttons" type="radio" value="0" />
+	        <label class="title" for="buttons_0">No Buttons</label>
+	      </h4>
+	      <ul></ul>
+	    </div>
 
-        <div class="buttons palette">
-          <h4>
-            <a href="#" class="tooltip" title="Every Midi-Fighter is equipped with high-performance Sanwa arcade buttons which are made in Japan by Dj Samurai warriors.">?</a>
-            <input id="buttons_3504" name="buttons" type="radio" value="35.04"/>
-            <label class="title" for="buttons_3504">Arcade Buttons [$35]</label>
-          </h4>
+	    <div class="palette" data-ref="silicone">
+	      <h4>
+	        <a href="#" class="tooltip" title="Our Silicon cases are interchangeable and slip on or off like an iPhone glove. They have a nice grippy feel to them and a rounded camper edge so your fingers wont catch while performing lighting fast button crabs!">?</a>
+	        <input checked="checked" id="silicone_case_1" name="silicone_case" type="radio" value="1" />
+	        <label class="title" for="silicone_case_1">Silicone Case</label>
+	      </h4>
+	      <h4>
 
-          <h4>
-            <a href="#" class="tooltip" title="The opposite of having buttons... no buttons.">?</a>
-            <input checked="checked" id="buttons_0" name="buttons" type="radio" value="0"/>
-            <label class="title" for="buttons_0">No Buttons [$0]</label>
-          </h4>
-          <ul></ul>
-        </div>
+	        <a href="#" class="tooltip" title="The opposite of having a case... no case.">?</a>
+	        <input id="silicone_case_0" name="silicone_case" type="radio" value="0" />
+	        <label class="title" for="silicone_case_0">No Case</label>
+	      </h4>
+	      <ul></ul>
+	    </div>
 
-        <div class="silicone palette">
-          <h4>
-            <a href="#" class="tooltip" title="Our Silicon cases are interchangeable and slip on or off like an iPhone glove. They have a nice grippy feel to them and a rounded camper edge so your fingers wont catch while performing lighting fast button crabs!">?</a>
-            <input id="silicone_case_1999" name="silicone_case" type="radio" value="19.99"/>
-            <label class="title" for="silicone_case_1999">Silicone Case [$19]</label>
-          </h4>
-          <h4>
-            <a href="#" class="tooltip" title="The opposite of having a case... no case.">?</a>
-            <input checked="checked" id="silicone_case_0" name="silicone_case" type="radio" value="0"/>
-            <label class="title" for="silicone_case_0">No Case [$0]</label>
-          </h4>
-          <ul></ul>
-        </div>
+	    <div class="palette" data-ref="acrylic">
 
-        <div class="acrylic palette">
-          <h4>
-            <a href="#" class="tooltip" title="We have a sweet stash of cool spray-paint colors that we use to back paint the acrylic for a professional color finish. You can also get replacement acrylic top's in the future if your color tastes change like the seasons.  The top acrylic is painted but the bottom is left clear so you can see the PCB.">?</a>
-            <input id="acrylic_top_499" name="acrylic_top" type="radio" value="4.99"/>
-            <label class="title" for="acrylic_top_499">Painted Top [$5]</label>
-          </h4>
-          <h4>
-            <a href="#" class="tooltip" title="If you want to see the jet black guts of the midi-fighter and keep it DIY looking, you may want to opt for the clear acrylic option or paint it yourself. Some Midi-Fighter's even get tricked out with patterns, hand-painted graphics and magazine cut-outs.">?</a>
-            <input checked="checked" id="acrylic_top_0" name="acrylic_top" type="radio" value="0"/>
-            <label class="title" for="acrylic_top_0">Clear Acrylic [$0]</label>
-          </h4>
-          <ul></ul>
-        </div>
+	      <h4>
+	        <a href="#" class="tooltip" title="We have a sweet stash of cool spray-paint colors that we use to back paint the acrylic for a professional color finish. You can also get replacement acrylic top's in the future if your color tastes change like the seasons.  The top acrylic is painted but the bottom is left clear so you can see the PCB.">?</a>
+	        <input checked="checked" id="acrylic_top_1" name="acrylic_top" type="radio" value="1" />
+	        <label class="title" for="acrylic_top_1">Painted Top</label>
+	      </h4>
+	      <h4>
+	        <a href="#" class="tooltip" title="If you want to see the jet black guts of the midi-fighter and keep it DIY looking, you may want to opt for the clear acrylic option or paint it yourself. Some Midi-Fighter's even get tricked out with patterns, hand-painted graphics and magazine cut-outs.">?</a>
 
-        <div class="controller options">
-          <h4>
-            <a href="#" class="tooltip" title="We build the Midi-Fighter for you. Custom built midi fighter's will receive a Certificate of Authenticity, which is hand signed and numbered with a polaroid of your layout. Every certificate is scanned into an online registry of Midi-Fighters.">?</a>
-            <input checked="checked" id="assembled_15" name="assembled" type="radio" value="15"/>
-            <label for="assembled_15" class="title">Assembled [$15]</label>
-          </h4>
-          <h4>
-            <a href="#" class="tooltip" title="You will get everything you need to fully assemble a midi-fighter on your very own. It requires no soldering or mechanical knowledge - just 20 minutes, an open table and the willingness to be a kid again.">?</a>
-            <input id="assembled_0" name="assembled" type="radio" value="0"/>
-            <label for="assembled_0" class="title">DIY Kit [$0]</label>
-          </h4>
-        </div>
+	        <input id="acrylic_top_0" name="acrylic_top" type="radio" value="0" />
+	        <label class="title" for="acrylic_top_0">Clear Acrylic</label>
+	      </h4>
+	      <ul></ul>
+	    </div>
 
-        <div class="link">
-          <h4>
-            <a href="#" class="tooltip" title="Bookmarking or saving this link will let you come back to your masterpiece in progress.">?</a>
-            <label class="title" for="share_link">Share link</label>
-          </h4>
-          <input id="share_link" name="share_link" onclick="this.focus(); this.select();" type="text"/>
-        </div>
-      </nav>
+	    <div class="assembly option">
+	      <h4>
+	        <a href="#" class="tooltip" title="We build the Midi-Fighter for you. Custom built midi fighter's will receive a Certificate of Authenticity, which is hand signed and numbered with a polaroid of your layout. Every certificate is scanned into an online registry of Midi-Fighters.">?</a>
 
-      <div id="note" style="display:none">{{cart.note}}</div>
+	        <input checked="checked" id="assembled_1" name="assembled" type="radio" value="1" />
+	        <label class="title" for="assembled_1">Assembled</label>
+	      </h4>
+	      <h4>
+	        <a href="#" class="tooltip" title="You will get everything you need to fully assemble a midi-fighter on your very own. It requires no soldering or mechanical knowledge - just 20 minutes, an open table and the willingness to be a kid again.">?</a>
+	        <input id="assembled_0" name="assembled" type="radio" value="0" />
+	        <label class="title" for="assembled_0">DIY Kit</label>
 
-      <form class="controller" name="cartadd" method="post" action="/cart/add">
-        <!-- defaults to diy assembly -->
-        <input id="controller_assembly_input" type="hidden" value=""/>
-        <input id="controller_input" type="hidden" name="id[]" value=""/>
+	      </h4>
+	    </div>
 
-        <div class="silicone colorable">
-          <input id="silicone_input" class="silicone" type="hidden" name="id[]"/>
+	    <div class="link">
+	      <h4>
+	        <a href="#" class="tooltip" title="Bookmarking or saving this link will let you come back to your masterpiece in progress.">?</a>
+	        <label class="title" for="share_link">Share link</label>
+	      </h4>
 
-          <div class="acrylic colorable">
-            <input id="acrylic_input" class="acrylic" type="hidden" name="id[]"/>
+	      <input id="share_link" name="share_link" onclick="this.focus(); this.select();" type="text" />
+	    </div>
+	  </nav>
 
+	  <form class="controller" name="cartadd" method="post" action="/cart/add">
+	    <div class="colorable removed" data-ref="silicone">
+	      <div class="colorable removed" data-ref="acrylic">
 
-            <div class="button colorable col_0 row_0">
-              <input id="button_0_0_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_0 row_0" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_1 row_0">
-              <input id="button_1_0_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_1 row_0" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_2 row_0">
-              <input id="button_2_0_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_2 row_0" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_3 row_0">
-              <input id="button_3_0_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_3 row_0" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_0 row_1">
-              <input id="button_0_1_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_0 row_1" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_1 row_1">
-              <input id="button_1_1_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_1 row_1" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_2 row_1">
-              <input id="button_2_1_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_2 row_1" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_3 row_1">
-              <input id="button_3_1_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_3 row_1" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_0 row_2">
-              <input id="button_0_2_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_0 row_2" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_1 row_2">
-              <input id="button_1_2_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_1 row_2" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_2 row_2">
-              <input id="button_2_2_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_2 row_2" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_3 row_2">
-              <input id="button_3_2_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_3 row_2" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_0 row_3">
-              <input id="button_0_3_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_0 row_3" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_1 row_3">
-              <input id="button_1_3_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_1 row_3" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_2 row_3">
-              <input id="button_2_3_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_2 row_3" data-ref="button">
+	            </div>
 
-            <div class="button colorable col_3 row_3">
-              <input id="button_3_3_input" type="hidden" name="id[]">
-            </div>
+	            <div class="colorable removed col_3 row_3" data-ref="button">
+	            </div>
 
-          </div>
-        </div>
+	      </div>
+	    </div>
 
-        <div id="fb-root"></div>
-        <fb:like id="fb_like" action="like" colorscheme="light" font="arial" href="http://techtools.myshopify.com/products/midifighter-diy-kit" show_faces="false" height="25" width="265"></fb:like>
+	    <aside class="random">
+	      <h4>
+	        <a class="randomize" href="#" onclick="config.random(); return false;">Randomize!</a>
+	      </h4>
+	    </aside>
 
-        <aside class="random">
-          <h4><a class="randomize" href="#" onclick="MF.Config.random(); return false;">Randomize!</a></h4>
-        </aside>
+	    <aside class="checkout">
+	      <span class="total">Total Price: $<span class="value"></span></span>
+	      <a class="add_to_cart action" href="#" onclick="config.submit(); return false;">See in store!</a>
+	    </aside>
+	  </form>
 
-        <aside class="checkout">
-          <span class="total">Total Price: $<span class="value"></span></span>
-          <a class="add_to_cart action" href="#" onclick="MF.Config.submit(); return false;">Add to cart</a>
-        </aside>
-      </form>
+	</section>
+	<script type="text/javascript">
+	//<![CDATA[
 
-    </section>
+	    $(function(){
+	        $('nav h4 a.tooltip').tipsy({
+	            gravity: 'w',
+	            delayIn: 250,
+	            delayOut: 250
+	        });
 
-    <script type="text/javascript">
-        //<![CDATA[
+	        $('div.tipsy.tipsy-e').css('z-index', 2);
+	
+	        window.fbAsyncInit = function() {
+	            FB.init({appId: '113248718719389', status: true, cookie: true, xfbml: true});
+	        };
+	        (function() {
+	            var e = document.createElement('script');
+	            e.type = 'text/javascript';
+	            e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+	            e.async = true;
+	            document.getElementById('fb-root').appendChild(e);
+	        }());
+	    });
 
-        $(function() {
-            $('nav h4 a.tooltip').tipsy({
-                gravity: 'w',
-                delayIn: 250,
-                delayOut: 250
-            });
-
-            $('nav .color[title="Clear"]').tipsy({
-                gravity: 'e',
-                delayIn: 0,
-                delayOut: 250,
-                trigger: 'manual'
-            }).tipsy("show");
-
-            $('div.tipsy.tipsy-e').css('z-index', 2);
-        });
-
-        //]]>
-    </script>
-
+	//]]>
+	</script>
 
     <div class="preview">
         <div class="thumbs">

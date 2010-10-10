@@ -29,7 +29,6 @@ section#midifighter nav {
     float: left;
     width: 210px;
     position: relative;
-    left: -10px;
 }
 
 section#midifighter nav > div {
@@ -123,7 +122,7 @@ section#midifighter form.controller {
     top:10px;
 }
 
-section#midifighter .button {
+section#midifighter .controller .button {
     height:82px;
     width:82px;
     position:absolute;
@@ -180,7 +179,7 @@ section#midifighter .button {
     width:20px;
 }
 
-#midifighter #color_selector .buttons .color {
+#midifighter #color_selector .button .color {
     background-position: -38px -19px !important;
 }
 
@@ -194,10 +193,6 @@ section#midifighter .button {
     float: right;
     margin: 5px 13px 10px 0;
     padding: 0;
-}
-
-#midifighter .checkout {
-	width: 315px;
 }
 
 #midifighter .checkout .total {
@@ -217,9 +212,14 @@ section#midifighter .button {
     padding:2px 7px 4px;
 }
 
+#container #midifighter .add_to_card {
+    margin: 0;
+}
+
 #container .add_to_cart {
     background-color:#FF9000;
     color:#FFFFFF;
+    padding:6px 26px 4px;
     position:relative;
     font-size:11px;
     font-family:Helvetica, Arial, sans-serif;
@@ -229,7 +229,6 @@ section#midifighter .button {
     border: none;
     text-decoration: none;
     float: right;
-    margin: 0;
     width: 145px;
     text-align: center;
 }

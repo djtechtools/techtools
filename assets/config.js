@@ -2,331 +2,120 @@ MF = window.MF ? MF : {};
 
 (function($) {
 
-  var _mf = {
-    silicone: {},
-    acrylic: {},
-    buttons: []
-  };
+  var nav;
+  var controller;
+  var URL = /http:\/\//i;
+  var PREVENT_CHANGES = false;
 
-  var FIRE_CHANGES = true;
-
-  function color_li(product) {
-    return '<li class="color" style="background:' + product.color + '" data-color="' + product.color + '" title="' + product.name + '" data-shop-id="' + product.shop_id + '"></li>';
+  function css(color) {
+    return URL.test(color) ? "url(" + color + ")" : color;
   }
 
-  function attach_drop_event(to, accept) {
-    $(to).droppable({
-      drop: drop_event_handler,
-      activeClass: "ui-state-highlight",
-      hoverClass: "ui-state-hover",
-      accept: accept + " .color:not(.ui-sortable-helper)",
-      greedy: false
+  function setupPalettesAndColorables() {
+    $().add($('.palette', nav)).
+        add($('.colorable', controller)).
+    each(function() {
+      $(this).addClass($(this).attr('data-ref'));
     });
   }
 
-  function drop_event_handler(event, ui) {
-    apply_color_to_target(ui.draggable, $(this));
-  }
-
-  function bad_target(target){
-    if (target.is(".button")   && !are_buttons_selected() ){ return true; }
-    if (target.is(".silicone") && !is_case_selected()     ){ return true; }
-    if (target.is(".acrylic")  && !is_acrylic_selected()  ){ return true; }
-    return false;
-  }
-
-  function apply_color_to_target(color_el, target) {
-    if(bad_target(target)){ return; }
-
-    var color = color_el.attr('data-color');
-    var color_name = color_el.attr('title');
-    var shop_id = color_el.attr('data-shop-id');
-
-    target.css('background', color);
-    var input = $('input[name=id[]]:first', target);
-        input.val(shop_id).attr('data-color-name', color_name);
-
-    if(FIRE_CHANGES){
-      input.change();
+  function createPalette(products) {
+    function createColor(product) {
+      return $("<li/>").addClass('color').applyStyle(product);
     }
-  }
 
-  function apply_product_id_to_target(product_id, target) {
-    $('.palette .color').each(function(i,el){
-      if($(el).attr('data-shop-id') === product_id){
-        apply_color_to_target($(el), $(target));
-      }
+    $.each({
+      'silicone': products['silicone-case'],
+      'acrylic': products['acrylic-top-plate'],
+      'button': products['arcade-buttons']
+    }, function(selector, products) {
+      $.each(products, function(i, product) {
+        $('.' + selector + " ul", nav).append(createColor(product));
+      });
     });
   }
 
-  /**
-   * Poorly named?  Probably.. matches by shop id, that's the issue
-   * doesn't match on color...
-   * @param target
-   */
-  function get_color_from_target(target){
-    var color = undefined;
-    var input = $('input[name=id[]]:first', target);
-    $('.palette .color').each(function(i,el){
-      if($(el).attr('data-shop-id') === input.val()){
-        color = el;
-      }
-    });
-    return $(color);
+  function toProduct(color) {
+    return {
+      "name":     $(color).attr('data-title'),
+      "color":    $(color).attr('data-color'),
+      "shop_id":  $(color).attr('data-shop-id'),
+      "price":    $(color).attr('data-price')
+    };
   }
 
-  function update_price() {
-    var total = 125.00;
-    $('section nav h4 input:radio:checked').each(function() {
-      total += parseFloat($(this).val());
-    });
-    total = Math.ceil(total);
-    $('#midifighter aside.checkout .value').text(total);
-  }
+  function bindDragAndDrop() {
+    $('.palette .color', nav).draggable({
+                        helper: "clone"
+                      });
 
-  function update_buttons() {
-    $('.controller .button').each(function(i, el) {
-      _mf.buttons[i] = _mf.buttons[i] || {};
-      togglePresence(are_buttons_selected(), _mf.buttons[i], $(el));
+    $('.colorable', controller).each(function() {
+      var referenced = $(this).attr('data-ref');
+
+      $(this).droppable({
+        drop: function(event, ui) {
+          $(this).apply(toProduct(ui.draggable));
+          update();
+        },
+        accept: "nav ." + referenced + " .color",
+        greedy: true
+      });
     });
   }
 
-  function update_case() {
-    togglePresence(is_case_selected(), _mf.silicone, $('.controller .silicone'));
-  }
-
-  function update_acrylic() {
-    togglePresence(is_acrylic_selected(), _mf.acrylic, $('.controller .acrylic'));
-  }
-
-  function update_assembly() {
-    var c = $('#controller_assembly_input');
-    if (is_diy_selected()) {
-      c.removeAttr('name');
-    }
-    else {
-      c.attr('name', 'id[]').val(product.assembly.shop_id);
-    }
-  }
-
-  function update_persistence(){
-    var serialized = self.serialize();
-    self.cookie(serialized);
-
-    var link = location.href.split('#')[0] + '#' + serialized;
-    $('#share_link').val(link);
-
-    var version = parseInt($.browser.version.replace(/\./g, ''));
-    if(!$.browser.mozilla || !(version < 1929)) {
-      location.hash = serialized;
-    }
-  }
-
-  function togglePresence(on, obj, $el) {
-    if (on) {
-      //only update it it's currently blank
-      var shop_id = $('input:first', $el).val();
-      if(!$.isEmptyObject(obj) && shop_id == '') {
-        $('input:first', $el).attr('name', 'id[]');
-        $('input:first', $el).val(obj.shop_id);
-        $('input:first', $el).attr('data-color-name', obj.color_name);
-        $('input:first', $el);
-        $el.removeClass('removed').css('background', obj.color).attr('title', obj.color_name);
-      }
-    }
-    else {
-      $('input:first', $el).removeAttr('name');
-      obj.shop_id = $('input:first', $el).val();
-      $('input:first', $el).val('');
-      obj.color_name = $('input:first', $el).attr('data-color-name');
-      $('input:first', $el).attr('data-color-name', '');
-      $('input:first', $el);
-      obj.color = $el.css('background');
-      $el.addClass('removed').css('background', '').attr('title', '');
-    }
-  }
-
-  function is_diy_selected() {
-    return $('#assembled_0').is(':checked');
-  }
-
-  function are_buttons_selected() {
-    return !$('#buttons_0').is(':checked');
-  }
-
-  function is_case_selected() {
-    return !$('#silicone_case_0').is(':checked');
-  }
-
-  function is_acrylic_selected() {
-    return !$('#acrylic_top_0').is(':checked');
-  }
-
-  function setup_colors(){
-    $.each(product.silicone, function(i, product) {
-      $('nav .silicone ul').append(color_li(product));
-    });
-
-    $.each(product.acrylic, function(i, product) {
-      $('nav .acrylic ul').append(color_li(product));
-    });
-
-    $.each(product.button, function(i, product) {
-      $('nav .buttons ul').append(color_li(product));
-    });
-  }
-
-  function setup_clicks(){
-    $('nav .buttons .color').click(function() {
+  function bindClicks() {
+    $('.button .color', nav).click(function() {
       $(this).addClass('selected').siblings().removeClass('selected');
     });
 
-    $('form.controller .button').click(function() {
-      var color = $('nav .buttons .color.selected');
+    $('.button', controller).click(function() {
+      var color = $('.button .color.selected', nav).get(0);
       if (color) {
-        apply_color_to_target(color, $(this));
+        $(this).apply(toProduct(color));
+        update();
       }
     });
 
-    $('nav .silicone .color').click(function() {
-      apply_color_to_target($(this), $('.controller .silicone'));
-    });
-
-    $('nav .acrylic .color').click(function() {
-      apply_color_to_target($(this), $('.controller .acrylic'));
+    $.each(['silicone', 'acrylic'], function(i, ref) {
+      $('.' + ref + ' .color', nav).click(function() {
+        $('.' + ref, controller).apply(toProduct(this));
+        update();
+      });
     });
   }
 
-  function condenseChanges(callback) {
-    FIRE_CHANGES = false;
+  function withoutChanges(callback){
+    PREVENT_CHANGES = true;
     callback.call();
-    FIRE_CHANGES = true;
-    update_price();
-    update_buttons();
-    update_case();
-    update_acrylic();
-    update_assembly();
-    update_persistence();
+    PREVENT_CHANGES = false;
   }
 
-  var c;
-  var self = MF.Config = {
+  function bindChanges() {
+    $('.palette input', nav).change(function() {
+      if(PREVENT_CHANGES) { return }
+      var ref = $(this).closest('.palette').attr('data-ref');
+      $('.' + ref, controller).setVisibility($(this).isSelected());
+    });
 
-    cookie:function(value){
-      return $.cookie('MF.Config', value);
-    },
+    $('.assembly input', nav).change(update);
+  }
 
-    serialize:function(){
-      var serialization = '';
+  function cookie(value) {
+    return $.cookie('MF.Config', value)
+  }
 
-      if(are_buttons_selected()) {
-        serialization += "&buttons=";
-        $('.button', c).each(function(i, el) {
-          if(i !== 0){ serialization += ','; }
-          serialization += get_color_from_target(el).attr('data-shop-id');
-        });
-      }
+  function getNote() {
+    var note = $.trim($('#note').val());
 
-      if(is_case_selected()) {
-        serialization += "&case=" + get_color_from_target($('.silicone', c)).attr('data-shop-id');
-      }
-
-      if(is_acrylic_selected()) {
-        serialization += "&acrylic=" + get_color_from_target($('.acrylic', c)).attr('data-shop-id');
-      }
-
-      return serialization;
-    },
-
-    deserialize:function(hash){
-      condenseChanges(function(){
-        var params = hash.split('&');
-        for(var key in params) {
-          var value = params[key].split('=');
-          var product = value[0];
-          var shop_ids = value[1];
-          switch(product) {
-            case 'buttons':
-              var ids = shop_ids.split(',');
-              $('section nav .buttons input:first').click().change();
-              for(var i=0; i<ids.length; i++){
-                apply_product_id_to_target(ids[i], $('.button', c).get(i));
-              }
-              break;
-            case 'case':
-              $('section nav .silicone input:first').click().change();
-              apply_product_id_to_target(shop_ids, $('.silicone', c));
-              break;
-            case 'acrylic':
-              $('section nav .acrylic input:first').click().change();
-              apply_product_id_to_target(shop_ids, $('.acrylic', c));
-              break;
-          }
-        }
-      });
-    },
-
-    init: function() {
-      c = $('form.controller');
-
-      setup_colors();
-      setup_clicks();
-
-      $('#controller_input', c).val(product.controller.shop_id);
-
-      $('nav input').change(update_price);
-      $('nav .buttons input').change(update_buttons);
-      $('nav .silicone input').change(update_case);
-      $('nav .acrylic input').change(update_acrylic);
-      $('nav .controller input').change(update_assembly);
-
-      $('nav .palette input, form.controller input').change(update_persistence);
-
-      attach_drop_event('.controller .silicone', "nav .silicone");
-      attach_drop_event('.controller .acrylic', "nav .acrylic");
-      attach_drop_event('.controller .button', "nav .buttons");
-      $('nav .color').draggable({
-        helper: "clone"
-      });
-
-      var hash = location.hash.slice(1);
-      var cookie = self.cookie();
-
-      if (hash !== '') {
-        self.deserialize(hash);
-      }
-      else if( cookie !== '' ) {
-        self.deserialize(cookie);
-      }
-      else {
-        self.random();
-        $('section nav .buttons input:eq(1)').click().change();
-        $('section nav .silicone input:eq(1)').click().change();
-        $('section nav .acrylic input:eq(1)').click().change();
-      }
-    },
-
-    getNote:function() {
-      var note = $.trim($('#note').val());
-
-      if (note.length > 0) {
-        note += "\n\n-----------------------------------------------------\n\n"
-      }
-
-      note += is_diy_selected() ? "DIY assembly" : "Pre-assembled";
+    if( $('.assembly', nav).size() > 0 ) {
+      note += $('.assembly', nav).isSelected() ? "DIY assembly" : "Pre-assembled";
       note += "\n";
+    }
 
-      if (is_case_selected()) {
-        note += to_s('.silicone input') + ", silicone\n";
-      }
-
-      if (is_acrylic_selected()) {
-        note += to_s('.acrylic input') + ", acrylic\n";
-      }
-
-      note += "\n";
-
-      $('.button input', c).each(function(i, el) {
+    note += $('.silicone', nav).isSelected() ? to_s('.silicone', nav) + ", silicone\n" : "";
+    note += $('.acrylic', nav).isSelected() ? to_s('.acrylic', nav) + ", acrylic\n" : "";
+    if($('.button', nav).isSelected()) {
+      $('.button', controller).each(function(i, el) {
         var desc = to_s(el);
         note += desc + "\t";
 
@@ -338,41 +127,223 @@ MF = window.MF ? MF : {};
           }
         }
       });
+    }
 
-      return note;
+    return note;
 
-      function to_s(el) {
-        return $(el, c).attr('data-color-name');
+    function to_s(el) {
+      var input = $(el,controller);
+      return input.attr('data-title');
+    }
+  }
+
+  function serialize() {
+    var serialization = '';
+
+    if ($('.button', nav).isSelected()) {
+      serialization += "&buttons=";
+      $('.button', controller).each(function(i, el) {
+        if (i !== 0) {
+          serialization += ',';
+        }
+        serialization += $(el).attr('data-shop-id');
+      });
+    }
+
+    if ($('.silicone', nav).isSelected()) {
+      serialization += "&case=" + $('.silicone', controller).attr('data-shop-id');
+    }
+
+    if ($('.acrylic', nav).isSelected()) {
+      serialization += "&acrylic=" + $('.acrylic', controller).attr('data-shop-id');
+    }
+
+    return serialization;
+  }
+
+  function deserialize(hash) {
+    $.fn.applyProductById = function(product_id) {
+      var target = $(this);
+      $('.palette .color', nav).each(function(i, el) {
+        if ($(el).attr('data-shop-id') === product_id) {
+          $(target).apply( toProduct(el) );
+          return false;
+        }
+      });
+    };
+
+    withoutChanges(function(){
+      // everything off -- blank slate
+      $('.palette', nav).find('input:last').click().change();
+
+      var params = hash.split('&');
+      for (var key in params) {
+        var value = params[key].split('=');
+        var product = value[0];
+        var shop_ids = value[1];
+        switch (product) {
+          case 'buttons':
+            var ids = shop_ids.split(',');
+            $('.button input:first', nav).click().change();
+            $.each(ids, function(i, id) {
+              $($('.button', controller).get(i)).applyProductById(id)
+            });
+            break;
+          case 'case':
+            $('.silicone input:first', nav).click().change();
+            $('.silicone', controller).applyProductById(shop_ids);
+            break;
+          case 'acrylic':
+            $('.acrylic input:first', nav).click().change();
+            $('.acrylic', controller).applyProductById(shop_ids);
+            break;
+        }
       }
-    },
+    });
+    update();
+  }
 
-    submit: function() {
-      var note = self.getNote();
-      Shopify.updateCartNote(note, function() {
-        $('section form.controller').submit();
+  function update() {
+    if(PREVENT_CHANGES) { return }
+
+    function price() {
+      var total = 0;
+      $('input[data-price]', controller).each(function() {
+        total += parseInt( $(this).attr('data-price') );
       });
-    },
+      return Math.floor(total/100);
+    }
 
-    random:function() {
-      $('section nav .buttons input:first').click().change();
-      $('section nav .silicone input:first').click().change();
-      $('section nav .acrylic input:first').click().change();
+    $('.checkout .value', controller).text(price());
 
-      condenseChanges(function(){
-        $('.button.colorable', c).each(function(i, el){
-          apply_color_to_target($('section nav .buttons .color').random(), $(el));
-        });
+    var serialized = serialize();
+    cookie(serialized);
 
-        apply_color_to_target($('section nav .silicone .color').random(), $('.silicone.colorable', c));
-        apply_color_to_target($('section nav .acrylic .color').random(), $('.acrylic.colorable', c));
-      });
+    var link = location.href.split('#')[0] + '#' + serialized;
+    $('#share_link').val(link);
+
+    var version = parseInt($.browser.version.replace(/\./g, ''));
+    if (!$.browser.mozilla || !(version < 1929)) {
+      location.hash = serialized;
+    }
+  }
+
+  $.fn.apply = function(product) {
+    var ref = $(this).attr('data-ref');
+    if ($('.' + ref, nav).isSelected()) {
+      $(this).applyStyle(product).addToForm(product);
     }
   };
 
-  $.fn.random = function(){
+  $.fn.applyStyle = function(product) {
+    return $(this).
+            css('background', css(product.color)).
+            attr('data-title', product.name).
+            attr('data-color', product.color).
+            attr('data-shop-id', product.shop_id).
+            attr('data-price', product.price).
+            removeClass('removed');
+  };
+
+  $.fn.addToForm = function(product, type) {
+    var referenced = type || $(this).attr('data-ref');
+    var cartProduct = $('<input/>').
+            attr('class', referenced + "_input").
+            attr('type', 'hidden').
+            attr('name', 'id[]').
+            val(product.shop_id).
+            attr('data-price', product.price);
+    var input = $("input." + referenced + "_input", this);
+    input.size() == 0 ? $(this).prepend(cartProduct) : input.replaceWith(cartProduct);
+    return $(this);
+  };
+
+  $.fn.isSelected = function() {
+    return !$(this).closest('.palette, .option').find('input[value="0"]').is(':checked');
+  };
+
+  $.fn.setVisibility = function(on) {
+    $(this).each(function() {
+      if (on) {
+        var product = toProduct(this);
+        $(this).apply(product);
+      } else {
+        var ref = $(this).attr('data-ref');
+        $(this).addClass('removed').css('background', '').find('input.'+ref+'_input').remove();
+      }
+    });
+
+    update();
+    return $(this);
+  };
+
+  $.fn.random = function() {
     var random_element_index = Math.floor(Math.random() * $(this).size());
     var random_element = $(this).get(random_element_index);
     return $(random_element);
+  };
+
+  MF.Config = function(product) {
+
+    var hash = location.hash.slice(1);
+    var hashFromCookie = cookie();
+
+    nav = $('#midifighter nav');
+    $('.assembly input', nav).change(function(){
+      if($(this).isSelected()){
+        controller.addToForm(product['midi-fighter-assembly'], 'assembly');
+      } else {
+        $('input.assembly_input', controller).remove();
+      }
+    });
+
+    controller = $('#midifighter form.controller');
+    controller.addToForm(product['midifighter-diy-kit'], 'controller');
+
+    setupPalettesAndColorables();
+    createPalette(product);
+
+    random();
+
+    bindDragAndDrop();
+    bindClicks();
+    bindChanges();
+
+    $('.palette, .option', nav).find('input:last').click().change();
+
+    if (hash !== '') {
+      deserialize(hash);
+    }
+    else if( hashFromCookie !== '' ) {
+      deserialize(hashFromCookie);
+    }
+
+    function random() {
+      $('.button', controller).each(function(i, el) {
+        $(el).apply(toProduct($('.button .color', nav).random()));
+      });
+
+      $('.silicone', controller).apply(toProduct($('.silicone .color', nav).random()));
+      $('.acrylic', controller).apply(toProduct($('.acrylic .color', nav).random()));
+      update();
+    }
+
+    function submit() {
+      Shopify.updateCartNote(getNote(), function() {
+        $(controller).submit();
+      });
+    }
+
+    // expose public methods
+    return {
+      "random": random,
+      "submit": submit,
+
+      // for testing
+      "serialize": serialize,
+      "deserialize": deserialize,
+      "getNote": getNote
+    };
   };
 
 })(jQuery);
