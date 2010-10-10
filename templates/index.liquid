@@ -12,13 +12,13 @@
 				<span class="bg"></span>
 			</div>
 		</div>
-				
+
 		<ul class="nav">
 			{% for product in collections.featured.products limit: featured_limit %}
 				<li>{{'circle_empty.png' | asset_url | img_tag}}</li>
 			{% endfor %}
 		</ul>
-		
+
 		<div class="data" style="display:none;">
 			{% for product in collections.featured.products limit: featured_limit %}
 			<div class="product {% if forloop.last %} last {% endif %}">
@@ -27,12 +27,12 @@
 				</span>
 				<span class="link" style="display:none">{{ product.url | within: collections.all }}</span>
 				<span class="title" style="display:none">{{ product.title | escape }}</span>
-				<span class="image" style="display:none">{{ product.images | first | product_img_url: 'original' }}</span>			
+				<span class="image" style="display:none">{{ product.images | first | product_img_url: 'original' }}</span>
 			</div>
 			{% endfor %}
 		</div>
 	</div>
-	
+
 	<div class="satellite">
 		<a href="{{ collections.midi-controllers.url }}">
 			{{'controllers.jpg' | asset_url | img_tag}}
@@ -53,32 +53,32 @@
 	</div>
 </div>
 
-<script type="text/javascript">		
+<script type="text/javascript">
 	$('#index .featured').disableTextSelect();
 
 	$('#index .featured .nav li').click( function() {
-		var index = $('#index .featured .nav li').index(this);				
+		var index = $('#index .featured .nav li').index(this);
 		setFeaturedProduct(index);
 		clearInterval(featured_interval);
 	});
-	
+
 	function setFeaturedProduct(index) {
 		$('#index .featured .nav li img').attr('src', '{{'circle_empty.png' | asset_url}}');
 		$('#index .featured .nav li:eq('+index+') img').attr('src', '{{'circle_selected.png' | asset_url}}');
-		
-		var link = $('#index .featured .data .product:eq('+index+') .link').text();		
-		var title = $('#index .featured .data .product:eq('+index+') .title').text();		
+
+		var link = $('#index .featured .data .product:eq('+index+') .link').text();
+		var title = $('#index .featured .data .product:eq('+index+') .title').text();
 		var image = $('#index .featured .data .product:eq('+index+') .image').text();
-		
+
 		$('#index .featured .wrapper img.spotlight').attr('src', image).attr('title', title);
 		$('#index .featured .wrapper a').attr('href', link).find('h1').text(title);
 	}
-	
+
 	var featured_index = 0;
 	var featured_interval = setInterval( function() {
 		featured_index = (featured_index + 1) % Math.min({{collections.featured.products.size}}, {{featured_limit}});
 		setFeaturedProduct( featured_index );
-	}, 5 * 1000);	
+	}, 5 * 1000);
 	setFeaturedProduct(0);
 </script>
 
@@ -91,7 +91,7 @@
 				<img src="{{ product.images | first | product_img_url: 'medium' }}" alt="{{ product.title | escape }}" />
 			</div>
 			<h4>{{ product.title | escape }}</h4>
-		</a>	
+		</a>
 	</div>
 	{% endfor %}
 </div>
@@ -100,12 +100,12 @@
 	<div class="bg"></div>
 	<div>
 		{{'worldwide.jpg' | asset_url | img_tag}}
-		<h4><a href="/pages/FAQ">We Ship WorldWide</a></h4> 
+		<h4><a href="/pages/Policies">We Ship WorldWide</a></h4>
 		<p>Dj's from around the world order our products every day. Prices are $5 and up depending on size and class of service.</p>
 	</div>
 	<div>
 		{{'guarantee.jpg' | asset_url | img_tag}}
-		<h4><a href="/pages/FAQ">100% Guaranteed</a></h4>
+		<h4><a href="/pages/Policies">100% Guaranteed</a></h4>
 		<p>We stand behind our products because we use them too.</p>
 	</div>
 	<div>

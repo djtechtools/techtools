@@ -47,8 +47,7 @@ section#midifighter h4 {
 }
 
 section#midifighter nav h4 input,
-section#midifighter nav h4 a.tooltip,
-section#midifighter nav h4 a.tooltip_ish {
+section#midifighter nav h4 a.tooltip {
     margin-left: 10px;
 }
 
@@ -57,7 +56,7 @@ section#midifighter nav #controller_link {
 }
 
 section#midifighter nav h4 .title,
-section#midifighter .randomize {
+section#midifighter h4 a.randomize {
     display:block;
     float:right;
     font-size:14px;
@@ -71,8 +70,7 @@ section#midifighter nav h4 input {
     top:1px;
 }
 
-section#midifighter nav h4 a.tooltip,
-section#midifighter nav h4 a.tooltip_ish {
+section#midifighter nav h4 a.tooltip {
     border:1px solid #000000;
     float:right;
     font-size:12px;
@@ -193,6 +191,12 @@ section#midifighter .controller .button {
     float: right;
     margin: 5px 13px 10px 0;
     padding: 0;
+    width: 325px;
+    position: relative;
+}
+
+#midifighter .random {
+    margin-top: 13px;
 }
 
 #midifighter .checkout .total {
@@ -212,14 +216,17 @@ section#midifighter .controller .button {
     padding:2px 7px 4px;
 }
 
-#container #midifighter .add_to_card {
+
+#container #midifighter .add_to_cart {
     margin: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 #container .add_to_cart {
     background-color:#FF9000;
     color:#FFFFFF;
-    padding:6px 26px 4px;
     position:relative;
     font-size:11px;
     font-family:Helvetica, Arial, sans-serif;
@@ -228,7 +235,6 @@ section#midifighter .controller .button {
     text-transform:uppercase;
     border: none;
     text-decoration: none;
-    float: right;
     width: 145px;
     text-align: center;
 }
@@ -239,12 +245,11 @@ section#midifighter .controller .button {
 }
 
 #fb_like {
-    bottom:6px;
-    left:-22px;
+    top:515px;
+    left:0px;
     position:absolute;
 }
 
 #fb_like iframe {
     height: 25px !important;
 }
-
