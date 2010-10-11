@@ -28,32 +28,44 @@
 		{% endif %}
 	{% endfor %}
 
-
-    var clear_regex = /clear\.png/i;
-    var default_regex = /default/i;
-
-    for(i in product) {
-        if($.isArray(product[i])) {
-            product[i] = $.map(product[i], function(el, i) {
-
-                if(default_regex.test(el.color) || clear_regex.test(el.color)) {
-                    return null;
-                }
-
-                return el;
-            });
+    product["silicone-case"] = $.map(product["silicone-case"], function(el, i){
+        switch(true) {
+            case /blue/i.test(el.name) :
+                el.color = "#00A5DB"; break;
+            case /white/i.test(el.name) :
+                el.color = "#FFFFFF"; break;
+            case /black/i.test(el.name) :
+                el.color = "#000000"; break;
+            case /red/i.test(el.name) :
+                el.color = "#E60003"; break;
+            case /orange/i.test(el.name) :
+                el.color = "#EA5A00"; break;
+            case /clear/i.test(el.name) :
+                el.color = "#F1F1F1"; break;
+            default:
+                console.debug(el);
+                return null;
         }
-    }
+        return el;
+    });
+
+    product["acrylic-top-plate"] = $.map(product["acrylic-top-plate"], function(el, i){
+        var assetName = $.trim(el.sku.toLowerCase().replace(/acrylic_|\s/g,''));
+        if (/^clear$/i.test(assetName) || /orange/i.test(assetName) ){ return null };
+        el.color = 'http://midifighter.com/images/acrylic/'+ assetName + '.png';
+        return el;
+    });
+
+    product["arcade-buttons"] = $.map(product["arcade-buttons"], function(el, i){
+        var assetName =  $.trim(el.name.toLowerCase().replace(/\s/g,''));
+        if (/fuchsia/i.test(assetName)){ return null };
+        el.color = 'http://midifighter.com/images/button/'+ assetName + '.png';
+        return el;
+    });
+
+    var config;
 
     //]]>
-</script>
-
-<script type="text/javascript" class="exclude">
-    var config;
-    $(function() {
-        config = new MF.Config(product);
-        $('#midifighter').data('instance', config);
-    });
 </script>
 
 <style type="text/css">
@@ -105,13 +117,12 @@
 	    <div class="palette" data-ref="acrylic">
 
 	      <h4>
-	        <a href="#" class="tooltip" title="We have a sweet stash of cool spray-paint colors that we use to back paint the acrylic for a professional color finish. You can also get replacement acrylic top's in the future if your color tastes change like the seasons.  The top acrylic is painted but the bottom is left clear so you can see the PCB.">?</a>
+	        <a href="#" class="tooltip" title="We now have 2 type of acrylic available. The High gloss shiny variation and a brand new Matte finish which is finger print proof! All of our matte colors are back painted by hand using high quality Montana Gold graffiti spray paints with some very bold, funky colors.">?</a>
 	        <input checked="checked" id="acrylic_top_1" name="acrylic_top" type="radio" value="1" />
 	        <label class="title" for="acrylic_top_1">Painted Top [$5-10]</label>
 	      </h4>
 	      <h4>
-	        <a href="#" class="tooltip" title="If you want to see the jet black guts of the midi-fighter and keep it DIY looking, you may want to opt for the clear acrylic option or paint it yourself. Some Midi-Fighter's even get tricked out with patterns, hand-painted graphics and magazine cut-outs.">?</a>
-
+	        <a href="#" class="tooltip" title="Your Midi-Fighter will come with the standard clear glossy top. It shows the guts of the Midi-Fighter very nicely but can pick up finger prints more easily than the matte version.">?</a>
 	        <input id="acrylic_top_0" name="acrylic_top" type="radio" value="0" />
 	        <label class="title" for="acrylic_top_0">Clear Acrylic [$0]</label>
 	      </h4>
@@ -216,6 +227,8 @@
 	</section>
 	<script type="text/javascript">
 	//<![CDATA[
+        config = new MF.Config(product);
+        $('#midifighter').data('instance', config);
 
 	    $(function(){
 	        $('nav h4 a.tooltip').tipsy({
@@ -223,6 +236,13 @@
 	            delayIn: 250,
 	            delayOut: 250
 	        });
+
+            $('nav .color[title="Clear"]').tipsy({
+                gravity: 'e',
+                delayIn: 0,
+                delayOut: 250,
+                trigger: 'manual'
+             }).tipsy("show");
 
 	        $('div.tipsy.tipsy-e').css('z-index', 2);
 
