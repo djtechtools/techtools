@@ -5,6 +5,8 @@ MF = window.MF ? MF : {};
   var nav;
   var controller;
   var URL = /http:\/\//i;
+  var GLOSSY = /gloss/i;
+  var MATTE = /mat(t)?e/i;
   var PREVENT_CHANGES = false;
 
   function css(color) {
@@ -26,12 +28,20 @@ MF = window.MF ? MF : {};
 
     $.each({
       'silicone': products['silicone-case'],
-      'acrylic': products['acrylic-top-plate'],
       'button': products['arcade-buttons']
     }, function(selector, products) {
       $.each(products, function(i, product) {
         $('.' + selector + " ul", nav).append(createColor(product));
       });
+    });
+
+    $.each(products['acrylic-top-plate'], function(i, product) {
+       if( MATTE.test(product.name) ) {
+           $('.acrylic ul.matte', nav).prepend(createColor(product));
+       }
+       else if( GLOSSY.test(product.name) ) {
+           $('.acrylic ul.glossy', nav).prepend(createColor(product));
+       }
     });
   }
 
@@ -317,11 +327,17 @@ MF = window.MF ? MF : {};
 
     $('.palette, .option', nav).find('input:last').click().change();
 
-    if (hash !== '') {
-      deserialize(hash);
-    }
-    else if( hashFromCookie !== '' ) {
-      deserialize(hashFromCookie);
+    try {
+      if (hash && hash !== '') {
+        deserialize(hash);
+      }
+      else if(hashFromCookie && hashFromCookie !== '') {
+        deserialize(hashFromCookie);
+      }
+    } catch(error) {
+      $('.palette, .option', nav).find('input:first').click().change();
+      random();
+      $('.palette, .option', nav).find('input:last').click().change();
     }
 
     function random() {

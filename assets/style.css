@@ -644,7 +644,6 @@ form input.action:hover,
 .product {
 	width: 740px;
 	margin: 4em auto;
-    overflow:hidden;
 }
 
 	.product .preview {

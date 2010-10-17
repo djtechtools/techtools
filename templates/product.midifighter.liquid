@@ -125,7 +125,12 @@
 	        <input id="acrylic_top_0" name="acrylic_top" type="radio" value="0" />
 	        <label class="title" for="acrylic_top_0">Clear Acrylic [$0]</label>
 	      </h4>
-	      <ul></ul>
+	      <ul class="matte">
+                  <li title="Matte"> </li>
+              </ul>
+	      <ul class="glossy">
+                  <li title="Glossy"> </li>
+              </ul>
 	    </div>
 
 	    <div class="assembly option">
@@ -236,12 +241,21 @@
 	            delayOut: 250
 	        });
 
-            $('nav .color[title="Clear"]').tipsy({
-                gravity: 'e',
-                delayIn: 0,
-                delayOut: 250,
-                trigger: 'manual'
-             }).tipsy("show");
+            setTimeout(function(){
+                $('nav .color[title="Clear"]').tipsy({
+                    gravity: 'e',
+                    trigger: 'manual'
+                }).tipsy("show");
+
+                $('nav .acrylic ul').find('li:last').each(function(){
+                    $(this).css('left', '6px').css('top', '2px');
+                    $(this).tipsy({
+                           gravity: 'e',
+                           trigger: 'manual'
+                       });
+                    $(this).tipsy("show");
+                });
+            }, 750);
 
 	        $('div.tipsy.tipsy-e').css('z-index', 2);
 
