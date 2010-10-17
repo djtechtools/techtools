@@ -58,7 +58,6 @@
 
     product["arcade-buttons"] = $.map(product["arcade-buttons"], function(el, i){
         var assetName =  $.trim(el.name.toLowerCase().replace(/\s/g,''));
-        if (/fuchsia/i.test(assetName)){ return null };
         el.color = 'http://midifighter.com/images/button/'+ assetName + '.png';
         return el;
     });
